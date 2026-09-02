@@ -73,3 +73,22 @@
 ### `sudokuGenerator.js`
 - generate puzzle
 - solution
+
+## Sudoku generator
+
+The project uses the `sudoku.js` library by Robatron.
+Source : [sudoku.js](https://github.com/robatron/sudoku.js/)
+
+The library is used to:
+- generate a new Sudoku puzzle;
+- will have medium difficulty set as default
+- provide the complet solution
+- convert the puzzle between string and 9x9 gird formats.
+
+The application logic is located in `sudokuGenerator.js`. This module communicates with external library and returns the puzzle and the solution to the rest of the application.
+
+
+## Design application state management
+
+
+

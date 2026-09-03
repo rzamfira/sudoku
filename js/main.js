@@ -1,9 +1,22 @@
 import './state.js';
-import './grid.js';
+import { generateGrid } from './grid.js';
 import './puzzle.js';
-import { generateGrid, generateSudoku } from './sudokuGenerator.js';
 
+// function to generate sudoku puzzle from an external library
+function generateSudoku() {
+
+    const puzzle = sudoku.generate('medium');  // difficulty will be always medium
+    const solution = sudoku.solve(puzzle);
+
+    return {
+        puzzle,
+        solution
+    };
+
+}
 
 const { puzzle, solution } = generateSudoku();
-console.log(sudoku.board_string_to_grid(puzzle));
-generateGrid(puzzle);
+generateGrid(sudoku.board_string_to_grid(puzzle));
+
+
+

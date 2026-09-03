@@ -1,22 +1,37 @@
+@font-face {
+    font-family: "Hauss";
+    src: url("fonts/als_hauss_regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Hauss";
+    src: url("fonts/als_hauss_medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+}
+
 body,
 html {
     cursor: default;
-    font-family: Hauss, sans-serif;
+    font-family: Hauss, "sans-serif";
 }
 
-.grid-container {
+main {
     width: 500px;
     height: 500px;
-    border: 3px solid #344861;
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);
+    position: relative;
 }
 
 .grid-item {
-    font-size: 38px;
-    font-family: "ALS Hauss Regular";
-    border: 1px solid #BFC6D4;
+    font-size: 36px;
+    font-family: Hauss;
+    font-weight: 400;
+    border: 0.01rem solid #BFC6D4;
     color: #344861;
     box-sizing: border-box;
     display: flex;
@@ -24,12 +39,45 @@ html {
     justify-content: center;
 }
 
-.grid-item:nth-child(3n):not(:nth-child(9n)) {
-    border-right: 3px solid #344861;
-
+.axis {
+    border: 0.1rem solid #344861;
+    position: absolute;
 }
 
-.grid-item:nth-child(n+19):nth-child(-n+27),
-.grid-item:nth-child(n+46):nth-child(-n+54) {
-    border-bottom: 3px solid #344861;
+#vertical-axis0 {
+    height: 500px;
+}
+
+#vertical-axis3 {
+    height: 500px;
+    left: 33%;
+}
+
+#vertical-axis6 {
+    height: 500px;
+    left: 66.1%;
+}
+
+#vertical-axis8 {
+    height: 500px;
+    left: 100%;
+}
+
+#horizontal-axis0 {
+    width: 500px;
+}
+
+#horizontal-axis3 {
+    width: 500px;
+    top: 33%;
+}
+
+#horizontal-axis6 {
+    width: 500px;
+    top: 66.1%;
+}
+
+#horizontal-axis8 {
+    width: 500px;
+    top: 100%;
 }

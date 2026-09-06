@@ -85,14 +85,12 @@ The library is used to:
 - provide the complet solution
 - convert the puzzle between string and 9x9 gird formats.
 
-The application logic is located in `sudokuGenerator.js`. This module communicates with external library and returns the puzzle and the solution to the rest of the application.
-
 
 ## Design for the sudoku grid
 
-I decided to create a 9×9 grid containing 81 cells, organized into a matrix with 9 rows and 9 columns.
-
-To visually separate the grid into the nine standard 3×3 Sudoku squares, I added 4 axes (2 horizontal & 2 vertical). These axes are positioned after the third and sixth columns and after the third and sixth rows.
-The grid is generated dynamically in JavaScript, allowing each cell to be associated with its row and column position.
+The sudoku board is structured as a 9x9 grid divided into nine 3x3 squares. Each square contains nine cells with values generated from `sudoku.js`.
+Every cell stores its rowIndex, columnIndex and squareIndex. These indexes are used to place cells correctly and support future highlighting and validation.
+The main grid and each square use equal rows and column to preserve the layout. The board uses square proportions so the cells remain proportional when the layout is resized.
+Some right and bottom borders are removed to prevent duplicated borders between neighboring squares. 
 
 

@@ -18,16 +18,25 @@ html {
     font-family: Hauss, "sans-serif";
 }
 
-main {
-    width: 500px;
-    height: 500px;
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(9, 1fr);
-    position: relative;
+.game-layout{
+    display: flex;
 }
 
-.grid-item {
+.grid-section{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(3,1fr);
+}
+
+.grid-square{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(3,1fr);
+    border: 1px solid #344861;
+    aspect-ratio: 1 / 1;
+}
+
+.grid-item{
     font-size: 36px;
     font-family: Hauss;
     font-weight: 400;
@@ -37,47 +46,13 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    aspect-ratio: 1 / 1;
 }
 
-.axis {
-    border: 0.1rem solid #344861;
-    position: absolute;
+#square-0, #square-1, #square-3, #square-4, #square-6, #square-7{
+    border-right: 0;
 }
 
-#vertical-axis0 {
-    height: 500px;
-}
-
-#vertical-axis3 {
-    height: 500px;
-    left: 33%;
-}
-
-#vertical-axis6 {
-    height: 500px;
-    left: 66.1%;
-}
-
-#vertical-axis8 {
-    height: 500px;
-    left: 100%;
-}
-
-#horizontal-axis0 {
-    width: 500px;
-}
-
-#horizontal-axis3 {
-    width: 500px;
-    top: 33%;
-}
-
-#horizontal-axis6 {
-    width: 500px;
-    top: 66.1%;
-}
-
-#horizontal-axis8 {
-    width: 500px;
-    top: 100%;
+#square-0, #square-1, #square-2, #square-3, #square-4, #square-5{
+    border-bottom: 0;
 }

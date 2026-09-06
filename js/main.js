@@ -1,22 +1,11 @@
 import './state.js';
-import { generateGrid } from './grid.js';
 import './puzzle.js';
+import { createLayout } from './gameLayout.js';
 
-// function to generate sudoku puzzle from an external library
-function generateSudoku() {
 
-    const puzzle = sudoku.generate('medium');  // difficulty will be always medium
-    const solution = sudoku.solve(puzzle);
+const puzzle = sudoku.generate('medium');  // generate the sudoku puzzle with medium difficulty
+createLayout(sudoku.board_string_to_grid(puzzle)); // create the app layout
 
-    return {
-        puzzle,
-        solution
-    };
-
-}
-
-const { puzzle, solution } = generateSudoku();
-generateGrid(sudoku.board_string_to_grid(puzzle));
 
 
 

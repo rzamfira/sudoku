@@ -1,3 +1,4 @@
+import { createControls } from "./control.js";
 import { createGrid } from "./grid.js";
 
 // function to create the app layout
@@ -9,9 +10,10 @@ export function createLayout(puzzle){
 
     // create the grid section
     const grid = createGrid(puzzle);
+    const controls = createControls();
 
 
-    gameLayout.append(grid);
+    gameLayout.append(grid, controls);
     appContainer.append(gameLayout);
 
 }

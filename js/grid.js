@@ -1,32 +1,47 @@
-
-// function to generate a 9x9 grid with implicit values for the sudoku puzzle
+// function to create the sudoku grid
 export function createGrid(puzzle) {
 
     const grid = document.createElement('section');
     grid.classList.add("grid-section");
 
-    const squares = []; // stores the nine 3x3 sudoku squares
+    const sudokuSquares = createSudokuSquares(grid);
+    createGridCells(puzzle, sudokuSquares);
+
+    return grid;
+
+}
+
+function createSudokuSquares(grid) {
+
+    const sudokuSquares = [];
     
-    // create 9 HTML elements, one for each Sudoku square
     for (let i = 0; i < 9; i++) {
+
         const square = document.createElement(`section`);
         square.classList.add('grid-square');
         square.setAttribute('id', `square-${i}`);
 
-        squares.push(square);
+        sudokuSquares.push(square);
         grid.appendChild(square);
+
     }
 
-    // parse the sudoku matrix and create an HTML element for each cell
+    return sudokuSquares;
+
+}
+
+function createGridCells(puzzle, sudokuSquares) {
+
     puzzle.forEach((row, rowIndex) => {
         row.forEach((value, columnIndex) => {
 
-            const cell = document.createElement('button');
+            const cell = document.createElement('span');
             cell.classList.add(`grid-item`);
             
-            // store the cell's row and column indexes
             cell.dataset.rowIndex = rowIndex;
             cell.dataset.columnIndex = columnIndex;
+
+            verifyBorderConflict(cell, rowIndex, columnIndex);
 
             // calculate the square index based on the cell's position
             const squareRow = Math.floor(rowIndex / 3);
@@ -34,17 +49,31 @@ export function createGrid(puzzle) {
             const squareIndex = squareRow * 3 + squareColumn;
             cell.dataset.squareIndex = squareIndex;
 
-            // display the value only if the cell is not empty
             if (value !== '.') {
                 cell.textContent = value;
             }
 
-            // append the cell to the corresponding square
-            squares[squareIndex].appendChild(cell);
+            sudokuSquares[squareIndex].appendChild(cell);
 
         });
     });
 
-    return grid;
-    
+}
+
+// prevents border conflicts by removing cell borders at the edges of each 3x3 square
+function verifyBorderConflict(cell, rowIndex, columnIndex) {
+
+    if (columnIndex % 3 === 2) {
+        cell.classList.add('cell-no-right-border');
+    }
+    if (columnIndex % 3 === 0) {
+        cell.classList.add('cell-no-left-border');
+    }
+    if (rowIndex % 3 === 2) {
+        cell.classList.add('cell-no-bottom-border');
+    }
+    if (rowIndex % 3 === 0) {
+        cell.classList.add('cell-no-top-border');
+    }
+
 }

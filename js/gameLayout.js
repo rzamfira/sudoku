@@ -1,17 +1,15 @@
-import { createControls } from "./control.js";
+import { createControlPanel } from "./control.js";
 import { createGrid } from "./grid.js";
 
 // function to create the app layout
-export function createLayout(puzzle){
+export function createLayout(puzzle) {
 
     const appContainer = document.getElementById("app");
-    const gameLayout = document.createElement('main'); // main element that contains the sudoku grid & the controls
+    const gameLayout = document.createElement('main'); 
     gameLayout.classList.add('game-layout');
 
-    // create the grid section
     const grid = createGrid(puzzle);
-    const controls = createControls();
-
+    const controls = createControlPanel();
 
     gameLayout.append(grid, controls);
     appContainer.append(gameLayout);

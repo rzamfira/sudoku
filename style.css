@@ -63,6 +63,18 @@ html {
     aspect-ratio: auto;
 }
 
+.highlight-neighbors{
+    background-color: #E2EBF3;
+}
+
+.highlight-value {
+    background-color: #C3D7EA;
+}
+
+.selected-cell{
+    background-color: #BBDEFB;
+}
+
 #square-0,
 #square-1,
 #square-3,

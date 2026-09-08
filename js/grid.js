@@ -41,8 +41,6 @@ function createGridCells(puzzle, sudokuSquares) {
             cell.dataset.rowIndex = rowIndex;
             cell.dataset.columnIndex = columnIndex;
 
-            verifyBorderConflict(cell, rowIndex, columnIndex);
-
             // calculate the square index based on the cell's position
             const squareRow = Math.floor(rowIndex / 3);
             const squareColumn = Math.floor(columnIndex / 3);
@@ -57,23 +55,5 @@ function createGridCells(puzzle, sudokuSquares) {
 
         });
     });
-
-}
-
-// prevents border conflicts by removing cell borders at the edges of each 3x3 square
-function verifyBorderConflict(cell, rowIndex, columnIndex) {
-
-    if (columnIndex % 3 === 2) {
-        cell.classList.add('cell-no-right-border');
-    }
-    if (columnIndex % 3 === 0) {
-        cell.classList.add('cell-no-left-border');
-    }
-    if (rowIndex % 3 === 2) {
-        cell.classList.add('cell-no-bottom-border');
-    }
-    if (rowIndex % 3 === 0) {
-        cell.classList.add('cell-no-top-border');
-    }
 
 }

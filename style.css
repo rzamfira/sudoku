@@ -12,6 +12,21 @@
     font-style: normal;
 }
 
+:root{
+
+    --color-grid-primary: #344861;
+    --color-grid-cell-border: #BFC6D4;
+    --color-highlight-neighbors: #E2EBF3;
+    --color-highlight-selected: #BBDEFB;
+    --color-highlight-same-value: #C3D7EA;
+    --color-controls-primary: #EAEEF4;
+    --color-timer: #6e7c8c;
+    --color-numpad-numbers: #325AAF;
+    --color-new-game-button: #5A7BC0;
+    --color-hover-button: #6687cc;
+    --color-white: #fff;
+}
+
 body,
 html {
     cursor: default;
@@ -30,7 +45,7 @@ html {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     aspect-ratio: 1 / 1;
-    border: 2px solid #344861;
+    border: 2px solid var(--color-grid-primary);
     box-sizing: border-box;
     align-self: flex-start;
     container-type: inline-size;
@@ -54,8 +69,8 @@ html {
     font-size: clamp(14px, 6cqi, 32px);
     font-family: Hauss;
     font-weight: 400;
-    border: 0.01rem solid #BFC6D4;
-    color: #344861;
+    border: 0.01rem solid var(--color-grid-cell-border);
+    color: var(--color-grid-primary);
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -64,15 +79,15 @@ html {
 }
 
 .highlight-neighbors{
-    background-color: #E2EBF3;
+    background-color: var(--color-highlight-neighbors);
 }
 
 .highlight-value {
-    background-color: #C3D7EA;
+    background-color: var(--color-highlight-same-value);
 }
 
 .selected-cell{
-    background-color: #BBDEFB;
+    background-color: var(--color-highlight-selected);
 }
 
 #square-0,
@@ -81,7 +96,7 @@ html {
 #square-4,
 #square-6,
 #square-7 {
-    border-right: 2px solid #344861;
+    border-right: 2px solid var(--color-grid-primary);
 }
 
 #square-0,
@@ -90,22 +105,34 @@ html {
 #square-3,
 #square-4,
 #square-5 {
-    border-bottom: 2px solid #344861;
+    border-bottom: 2px solid var(--color-grid-primary);
 }
 
-.cell-no-right-border {
+/* no right border for every last column of each square */
+.grid-item[data-column-index="2"],
+.grid-item[data-column-index="5"],
+.grid-item[data-column-index="8"] {
     border-right: none;
 }
 
-.cell-no-left-border {
+/* no left border for every first column of each square */
+.grid-item[data-column-index="0"],
+.grid-item[data-column-index="3"],
+.grid-item[data-column-index="6"] {
     border-left: none;
 }
 
-.cell-no-bottom-border {
+/* no bottom border for every last row of each square */
+.grid-item[data-row-index="2"],
+.grid-item[data-row-index="5"],
+.grid-item[data-row-index="8"] {
     border-bottom: none;
 }
 
-.cell-no-top-border {
+/* no top border  */
+.grid-item[data-row-index="0"],
+.grid-item[data-row-index="3"],
+.grid-item[data-row-index="6"] {
     border-top: none;
 }
 
@@ -125,7 +152,7 @@ html {
     justify-content: flex-end;
     align-items: center;
     gap: 6px;
-    color: #6e7c8c;
+    color: var(--color-timer);
     font-family: Hauss,sans-serif;
     font-size: 13px;
     font-stretch: normal;
@@ -149,7 +176,7 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eaeef4;
+    background: var(--color-controls-primary);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -200,8 +227,8 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #eaeef4;
-    border: 2px solid #eaeef4;
+    background-color: var(--color-controls-primary);
+    border: 2px solid var(--color-controls-primary);
     border-radius: 50%;
     box-sizing: border-box;
     cursor: pointer;
@@ -209,7 +236,6 @@ html {
 }
 
 .icon-game-action {
-    color: #344861;
     height: 100%;
     left: 50%;
     pointer-events: none;
@@ -242,11 +268,11 @@ html {
     height: auto;
     min-width: 0;
     min-height: 0;
-    background-color: #eaeef4;
+    background-color: var(--color-controls-primary);
     border: 0;
     border-radius: 5px;
     box-sizing: border-box;
-    color: #325aaf;
+    color: var(--color-numpad-numbers);
     cursor: pointer;
     font-size: clamp(32px, 8cqi, 42px);
     font-family: Hauss;
@@ -261,11 +287,11 @@ html {
     width: 100%;
     min-height: 60px;
     padding: 0 16px;
-    background-color: #5a7bc0;
+    background-color: var(--color-new-game-button);
     border: 0;
     border-radius: 5px;
     box-sizing: border-box;
-    color: #fff;
+    color: var(--color-white);
     cursor: pointer;
     font-size: 17px;
     font-weight: 500;
@@ -273,5 +299,5 @@ html {
 }
 
 .new-game-button:hover {
-    background-color: #6687cc;;
+    background-color: var(--color-hover-button);
 }

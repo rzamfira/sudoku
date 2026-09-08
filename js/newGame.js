@@ -4,7 +4,6 @@ export function newGameEventHandler() {
 
     const puzzle = sudoku.generate('medium');  // generate the sudoku puzzle with medium difficulty
     const puzzleMatrix = sudoku.board_string_to_grid(puzzle);
-    let selectedCell;
 
     puzzleMatrix.forEach((row, rowIndex) => {
         row.forEach((value, columnIndex) => {

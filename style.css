@@ -257,4 +257,9 @@ html {
     cursor: pointer;
     font-size: 17px;
     font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.new-game-button:hover {
+    background-color: #6687cc;;
 }

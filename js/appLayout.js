@@ -1,4 +1,4 @@
-import { createControlPanel } from "./control.js";
+import { createControlPanel } from "./controlsPanel.js";
 import { createGrid } from "./grid.js";
 
 // function to create the app layout

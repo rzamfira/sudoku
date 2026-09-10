@@ -1,9 +1,6 @@
+export function highlightSelected(grid, selectedCell) {
 
-export function handleCellClick(event) {
-
-    const selectedCell = event.target;
-
-    const cells = document.querySelectorAll('.grid-item');
+    const cells = grid.querySelectorAll('.grid-item');
     cells.forEach((currentCell) => {
 
         highlightNeighbors(currentCell, selectedCell);
@@ -14,8 +11,9 @@ export function handleCellClick(event) {
 
 }
 
+
 // function to highlight the row, column & square of the selected cell
-export function highlightNeighbors(cell, selectedCell) {
+function highlightNeighbors(cell, selectedCell) {
 
     removeHighlight(cell);
 

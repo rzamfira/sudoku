@@ -1,4 +1,4 @@
-import { highlightNeighbors } from "./selectedCell.js";
+import { highlightSelected} from "./selectedCell.js";
 
 // function to create the sudoku grid
 export function createGrid(puzzle) {
@@ -9,7 +9,34 @@ export function createGrid(puzzle) {
     const sudokuSquares = createSudokuSquares(grid);
     createGridCells(puzzle, sudokuSquares);
 
+    const firstCell = grid.querySelector('.grid-item');
+    highlightSelected(grid, firstCell);
+
     return grid;
+
+}
+
+export function newGrid (puzzle){
+
+    const grid = document.querySelector('.grid-section');
+
+    puzzle.forEach((row, rowIndex) => {
+        row.forEach((value, columnIndex) => {
+
+            const cell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
+
+            if (value !== '.') {
+                cell.textContent = value;
+            }
+            else {
+                cell.textContent = '';
+            }
+
+        });
+    });
+
+    const firstCell = grid.querySelector('.grid-item');
+    highlightSelected(grid, firstCell);
 
 }
 
@@ -60,21 +87,3 @@ function createGridCells(puzzle, sudokuSquares) {
 
 }
 
-export function updateGrid (puzzle){
-
-    puzzle.forEach((row, rowIndex) => {
-        row.forEach((value, columnIndex) => {
-
-            const cell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
-
-            if (value !== '.') {
-                cell.textContent = value;
-            }
-            else {
-                cell.textContent = '';
-            }
-
-        });
-    });
-
-}

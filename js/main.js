@@ -1,17 +1,17 @@
-import './state.js';
-import './puzzle.js';
-import { createLayout } from './appLayout.js';
-import { startNewGame } from './newGame.js';
-import { handleCellClick } from './selectedCell.js';
+import { createLayout } from './ui/appLayout.js';
+import { dispatch } from './dispatch.js';
+import { newGrid } from './ui/grid.js';
+import { highlightSelected } from './ui/selectedCell.js';
 
+let currentState = dispatch('NEW-GAME'); // initialize 
 
-const puzzle = sudoku.generate('medium');  // generate the sudoku puzzle with medium difficulty
-createLayout(sudoku.board_string_to_grid(puzzle)); // create the app layout
+createLayout(currentState.initialPuzzle); // create the app layout
 
 const newGameButton = document.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
 
-    startNewGame();
+    currentState = dispatch('NEW-GAME');
+    newGrid(currentState.initialPuzzle);
 
 });
 
@@ -19,8 +19,11 @@ const grid = document.querySelector('.grid-section');
 grid.addEventListener('click', (event) => {
 
     if (event.target.classList.contains('grid-item')) {
-        console.log(event.target);
-        handleCellClick(event);
+        const selectedCell = event.target;
+
+        currentState = dispatch('SELECT-CELL', selectedCell);
+        highlightSelected(grid, selectedCell);
+        
     }
 
 });

@@ -41,4 +41,8 @@ export class SudokuState {
         };
     }
 
+    addHistory(action){
+        this.history.push(action);
+    }
+
 }

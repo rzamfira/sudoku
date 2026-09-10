@@ -1,17 +1,18 @@
 import { createLayout } from './ui/appLayout.js';
 import { dispatch } from './dispatch.js';
-import { newGrid, updateCellValue } from './ui/grid.js';
+import { renderGrid, updateCellValue } from './ui/grid.js';
 import { highlightSelected } from './ui/selectedCell.js';
 
 let currentState = dispatch('NEW-GAME'); // initialize 
 
-createLayout(currentState.initialPuzzle); // create the app layout
+createLayout(); // create the app layout
+renderGrid(currentState);
 
 const newGameButton = document.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
 
     currentState = dispatch('NEW-GAME');
-    newGrid(currentState.initialPuzzle);
+    renderGrid(currentState);
 
 });
 

@@ -1,13 +1,13 @@
 import { highlightSelected } from "./selectedCell.js";
 
 // function to create the sudoku grid
-export function createGrid(puzzle) {
+export function createGrid() {
 
     const grid = document.createElement('section');
     grid.classList.add("grid-section");
 
     const sudokuSquares = createSudokuSquares(grid);
-    createGridCells(puzzle, sudokuSquares);
+    createGridCells(sudokuSquares);
 
     const firstCell = grid.querySelector('.grid-item');
     highlightSelected(grid, firstCell);
@@ -16,9 +16,10 @@ export function createGrid(puzzle) {
 
 }
 
-export function newGrid(puzzle) {
+export function renderGrid(currentState) {
 
     const grid = document.querySelector('.grid-section');
+    const puzzle = currentState.userPuzzle;
 
     puzzle.forEach((row, rowIndex) => {
         row.forEach((value, columnIndex) => {
@@ -35,8 +36,12 @@ export function newGrid(puzzle) {
         });
     });
 
-    const firstCell = grid.querySelector('.grid-item');
-    highlightSelected(grid, firstCell);
+    const rowIndex = currentState.selectedCell.rowIndex;
+    const columnIndex = currentState.selectedCell.columnIndex;
+
+    const selectedCell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
+
+    highlightSelected(grid, selectedCell);
 
 }
 
@@ -79,10 +84,10 @@ function createSudokuSquares(grid) {
 
 }
 
-function createGridCells(puzzle, sudokuSquares) {
+function createGridCells(sudokuSquares) {
 
-    puzzle.forEach((row, rowIndex) => {
-        row.forEach((value, columnIndex) => {
+    for(let rowIndex = 0; rowIndex < 9; rowIndex++){
+        for(let columnIndex = 0; columnIndex < 9; columnIndex++){
 
             const cell = document.createElement('span');
             cell.classList.add(`grid-item`);
@@ -96,14 +101,10 @@ function createGridCells(puzzle, sudokuSquares) {
             const squareIndex = squareRow * 3 + squareColumn;
             cell.dataset.squareIndex = squareIndex;
 
-            if (value !== '.') {
-                cell.textContent = value;
-            }
-
             sudokuSquares[squareIndex].appendChild(cell);
 
-        });
-    });
+        }
+    }
 
 }
 

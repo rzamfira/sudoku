@@ -1,39 +1,34 @@
 import { createLayout } from './ui/appLayout.js';
-import { dispatch } from './dispatch.js';
-import { renderGrid, updateCellValue } from './ui/grid.js';
-import { highlightSelected } from './ui/selectedCell.js';
+import { Dispatcher } from './dispatch.js';
+import { stateObserver } from './observers/stateObserver.js';
+import { gridObserver } from './observers/gridObserver.js';
 
-let currentState = dispatch('NEW-GAME'); // initialize 
+const dispatcher = new Dispatcher();
 
-createLayout(); // create the app layout
-renderGrid(currentState);
+dispatcher.subscribe(stateObserver);
+dispatcher.subscribe(gridObserver);
+
+createLayout(); // initialize grid & controls panel
+dispatcher.dispatch({ type: 'NEW-GAME' }); // generate the default sudoku values for a new game
+
+const grid = document.querySelector('.grid-section');
 
 const newGameButton = document.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
-
-    currentState = dispatch('NEW-GAME');
-    renderGrid(currentState);
-
+    dispatcher.dispatch({ type: 'NEW-GAME' });
 });
 
-const grid = document.querySelector('.grid-section');
+
 grid.addEventListener('click', (event) => {
-
     if (event.target.classList.contains('grid-item')) {
-        const selectedCell = event.target;
-
-        currentState = dispatch('SELECT-CELL', selectedCell);
-        highlightSelected(grid, selectedCell);
-
+        dispatcher.dispatch({ type: 'SELECT-CELL', cell: event.target });
     }
 
 });
 
 document.addEventListener('keydown', (event) => {
-    const pressedNumber = event.key;
-    if (pressedNumber >= '1' && pressedNumber <= '9') {
-        currentState = dispatch('INSERT-NUMBER-KEYBOARD', pressedNumber);
-        updateCellValue(grid, currentState);
+    if (event.key >= '1' && event.key <= '9') {
+        dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.key });
     }
 });
 

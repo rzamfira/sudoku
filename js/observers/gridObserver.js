@@ -1,6 +1,6 @@
 import { getCurrentState } from "../state.js";
 import { renderGrid, updateCellValue } from "../ui/grid.js";
-import { highlightSelected } from "../ui/selectedCell.js";
+import { highlightSelected } from "../ui/highlight.js";
 
 export function gridObserver(action) {
 

@@ -90,6 +90,11 @@ html {
     background-color: var(--color-highlight-selected);
 }
 
+.highlight-invalid {
+    background-color: #f4b6b6;
+    color: #c0392b;
+}
+
 #square-0,
 #square-1,
 #square-3,

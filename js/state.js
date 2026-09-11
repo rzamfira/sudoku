@@ -5,6 +5,7 @@ export class SudokuState {
         this.initialPuzzle = initialPuzzle;
         this.userPuzzle = this.copyPuzzle(initialPuzzle);
         this.selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
+        this.conflictCells = [];
         this.notes = this.createEmptyNotes();
         this.history = [];
         this.time = 0;
@@ -69,6 +70,10 @@ export class SudokuState {
 
     addHistory(action) {
         this.history.push(action);
+    }
+
+    setConflictCells(conflictCells) {
+        this.conflictCells = conflictCells;
     }
 
 }

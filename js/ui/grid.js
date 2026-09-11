@@ -1,4 +1,4 @@
-import { highlightSelected } from "./selectedCell.js";
+import { highlightConflict, highlightSelected } from "./highlight.js";
 
 // function to create the sudoku grid
 export function createGrid() {
@@ -59,6 +59,8 @@ export function updateCellValue(grid, currentState) {
         cell.textContent = value;
     }
 
+    highlightConflict(grid, currentState.conflictCells)
+
     highlightSelected(grid, cell);
 
 
@@ -86,8 +88,8 @@ function createSudokuSquares(grid) {
 
 function createGridCells(sudokuSquares) {
 
-    for(let rowIndex = 0; rowIndex < 9; rowIndex++){
-        for(let columnIndex = 0; columnIndex < 9; columnIndex++){
+    for (let rowIndex = 0; rowIndex < 9; rowIndex++) {
+        for (let columnIndex = 0; columnIndex < 9; columnIndex++) {
 
             const cell = document.createElement('span');
             cell.classList.add(`grid-item`);

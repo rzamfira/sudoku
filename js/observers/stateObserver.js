@@ -1,3 +1,4 @@
+import { verifyConflict } from "../puzzle.js";
 import { getCurrentState, initializeState } from "../state.js";
 import { generateSudokuGame } from "../sudokuGenerator.js";
 
@@ -20,6 +21,8 @@ export function stateObserver(action) {
 
     if (action.type === 'INSERT-VALUE') {
 
+        const conflictCells = verifyConflict(currentState.userPuzzle, currentState.selectedCell, action.value);
+        currentState.setConflictCells(conflictCells);
         const actionInfo = currentState.setCellValue(action.value);
         if (actionInfo) {
 

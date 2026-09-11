@@ -21,7 +21,7 @@ export class Dispatcher {
 
     notify(action) {
         this.observers.forEach(observer => {
-            observer(action);
+            observer(action, this);
         })
     }
 

@@ -41,29 +41,8 @@ export function renderGrid(currentState) {
 
     const selectedCell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
 
-    highlightSelected(grid, selectedCell);
-
-}
-
-export function updateCellValue(grid, currentState) {
-
-    const rowIndex = currentState.selectedCell.rowIndex;
-    const columnIndex = currentState.selectedCell.columnIndex;
-
-    const cell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
-
-    const value = currentState.userPuzzle[rowIndex][columnIndex];
-    if (value === '.') {
-        cell.textContent = '';
-    } else {
-        cell.textContent = value;
-    }
-
     highlightConflict(grid, currentState.conflictCells)
-
-    highlightSelected(grid, cell);
-
-
+    highlightSelected(grid, selectedCell);
 
 }
 

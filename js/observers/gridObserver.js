@@ -1,5 +1,5 @@
 import { getCurrentState } from "../state.js";
-import { renderGrid, updateCellValue } from "../ui/grid.js";
+import { renderGrid } from "../ui/grid.js";
 import { highlightSelected } from "../ui/highlight.js";
 
 export function gridObserver(action) {
@@ -10,7 +10,7 @@ export function gridObserver(action) {
     if (!currentState)
         return;
 
-    if (action.type === 'NEW-GAME') {
+    if (action.type === 'STATE-UPDATED') {
         renderGrid(currentState);
         return;
     }
@@ -20,9 +20,5 @@ export function gridObserver(action) {
         return;
     }
 
-    if (action.type === 'INSERT-VALUE') {
-        updateCellValue(grid, currentState);
-        return;
-    }
 
 }

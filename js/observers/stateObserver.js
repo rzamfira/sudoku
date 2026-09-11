@@ -2,12 +2,13 @@ import { verifyConflict } from "../puzzle.js";
 import { getCurrentState, initializeState } from "../state.js";
 import { generateSudokuGame } from "../sudokuGenerator.js";
 
-export function stateObserver(action) {
+export function stateObserver(action, dispatcher) {
 
     if (action.type === 'NEW-GAME') {
 
         const puzzle = generateSudokuGame();
         initializeState(puzzle);
+        dispatcher.dispatch({type: 'STATE-UPDATED'});
         return;
 
     }
@@ -30,6 +31,9 @@ export function stateObserver(action) {
             console.log(currentState.history);
 
         }
+
+        dispatcher.dispatch({type: 'STATE-UPDATED'});
+
     }
 
 }

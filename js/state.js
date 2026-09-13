@@ -5,8 +5,8 @@ export class SudokuState {
         this.initialPuzzle = initialPuzzle;
         this.userPuzzle = this.copyPuzzle(initialPuzzle);
         this.selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
-        this.conflictCells = [];
-        this.notes = this.createEmptyNotes();
+        this.conflictMatrix = this.createEmptyMatrix();
+        this.notes = this.createEmptyMatrix();
         this.history = [];
         this.time = 0;
         this.isPaused = false;
@@ -18,19 +18,19 @@ export class SudokuState {
         return puzzle.map(row => row.map(value => value));
     }
 
-    createEmptyNotes() {
+    createEmptyMatrix() {
 
-        const notes = [];
+        const matrix = [];
 
         for (let row = 0; row < 9; row++) {
             const currentRow = [];
             for (let column = 0; column < 9; column++) {
                 currentRow.push([]);
             }
-            notes.push(currentRow);
+            matrix.push(currentRow);
         }
 
-        return notes;
+        return matrix;
 
     }
 
@@ -72,8 +72,8 @@ export class SudokuState {
         this.history.push(action);
     }
 
-    setConflictCells(conflictCells) {
-        this.conflictCells = conflictCells;
+    setCellConflict(conflictMatrix) {
+        this.conflictMatrix = conflictMatrix;
     }
 
 }

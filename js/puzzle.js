@@ -1,36 +1,69 @@
-export function verifyConflict(userPuzzle, selectedCell, inputValue) {
+export function getCellConflict(userPuzzle) {
 
-    const conflictCells = [];
+    const conflictMatrix = createEmptyConflicts();
 
-    userPuzzle.forEach((row, rowIndex) => {
-        row.forEach((value, columnIndex) => {
+    userPuzzle.forEach((currentRow, currentRowIndex) => {
+        currentRow.forEach((currentValue, currentColumnIndex) => {
 
-            if (rowIndex === selectedCell.rowIndex && columnIndex === selectedCell.columnIndex)
+            if (currentValue === '.')
                 return;
 
-            if ((value == inputValue && rowIndex == selectedCell.rowIndex) ||
-                (value == inputValue && columnIndex == selectedCell.columnIndex))
-                conflictCells.push({ rowIndex, columnIndex });
+            const currentCellIndex = currentRowIndex * 9 + currentColumnIndex;
 
-            const currentSquareRow = Math.floor(rowIndex / 3);
-            const currentSquareColumn = Math.floor(columnIndex / 3);
+            userPuzzle.forEach((verifyRow, verifyRowIndex) => {
+                verifyRow.forEach((verifyValue, verifyColumnIndex) => {
 
-            const selectedSquareRow = Math.floor(selectedCell.rowIndex / 3);
-            const selectedSquareColumn = Math.floor(selectedCell.columnIndex / 3);
-            if (value === inputValue &&
-                currentSquareRow === selectedSquareRow &&
-                currentSquareColumn === selectedSquareColumn)
-                conflictCells.push({ rowIndex, columnIndex });
+                    if (verifyValue === '.')
+                        return;
+
+                    const verifyCellIndex = verifyRowIndex * 9 + verifyColumnIndex;
+                    if (verifyCellIndex <= currentCellIndex)
+                        return;
+
+                    if (currentValue !== verifyValue)
+                        return;
+
+                    const currentSquareRow = Math.floor(currentRowIndex / 3);
+                    const currentSquareColumn = Math.floor(currentColumnIndex / 3);
+
+                    const verifySquareRow = Math.floor(verifyRowIndex / 3);
+                    const verifySquareColumn = Math.floor(verifyColumnIndex / 3);
+
+                    if (currentRowIndex === verifyRowIndex || currentColumnIndex === verifyColumnIndex ||
+                        (currentSquareRow === verifySquareRow && currentSquareColumn === verifySquareColumn)) {
+
+                        conflictMatrix[currentRowIndex][currentColumnIndex].push({
+                            rowIndex: verifyRowIndex,
+                            columnIndex: verifyColumnIndex
+                        });
+
+                        conflictMatrix[verifyRowIndex][verifyColumnIndex].push({
+                            rowIndex: currentRowIndex,
+                            columnIndex: currentColumnIndex
+                        });
+
+                    }
+
+                });
+            });
         });
     });
 
-     if (conflictCells.length > 0) {
-        conflictCells.push({
-            rowIndex: selectedCell.rowIndex,
-            columnIndex: selectedCell.columnIndex
-        });
+    return conflictMatrix;
+
+}
+
+function createEmptyConflicts() {
+
+    const conflicts = [];
+
+    for (let row = 0; row < 9; row++) {
+        const currentRow = [];
+        for (let column = 0; column < 9; column++) {
+            currentRow.push([]);
+        }
+        conflicts.push(currentRow);
     }
 
-    return conflictCells;
-
+    return conflicts;
 }

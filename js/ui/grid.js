@@ -26,22 +26,18 @@ export function renderGrid(currentState) {
 
             const cell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
 
-            if (value !== '.') {
-                cell.textContent = value;
-            }
-            else {
-                cell.textContent = '';
-            }
+            cell.classList.remove('valid-value', 'invalid-value');
+
+            updateCellDisplay(cell, value, currentState, rowIndex, columnIndex);
 
         });
     });
 
     const rowIndex = currentState.selectedCell.rowIndex;
     const columnIndex = currentState.selectedCell.columnIndex;
-
     const selectedCell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
 
-    highlightConflict(grid, currentState.conflictCells)
+    highlightConflict(grid, currentState.conflictMatrix);
     highlightSelected(grid, selectedCell);
 
 }
@@ -88,4 +84,28 @@ function createGridCells(sudokuSquares) {
     }
 
 }
+
+function updateCellDisplay(cell, value, currentState, rowIndex, columnIndex) {
+
+    cell.classList.remove('valid-value', 'invalid-value');
+
+    if (value === '.') {
+        cell.textContent = '';
+        return;
+    }
+
+    cell.textContent = value;
+
+    if (currentState.initialPuzzle[rowIndex][columnIndex] === '.') {
+        if (currentState.conflictMatrix[rowIndex][columnIndex].length) {
+            cell.classList.add('invalid-value');
+        }
+        else {
+            cell.classList.add('valid-value');
+        }
+    }
+
+}
+
+
 

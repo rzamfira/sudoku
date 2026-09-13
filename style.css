@@ -19,9 +19,11 @@
     --color-highlight-neighbors: #E2EBF3;
     --color-highlight-selected: #BBDEFB;
     --color-highlight-same-value: #C3D7EA;
+    --color-highlight-invalid-cell: #F7CFD6;
     --color-controls-primary: #EAEEF4;
     --color-timer: #6e7c8c;
-    --color-numpad-numbers: #325AAF;
+    --color-blue: #325AAF;
+    --color-red: #E55C6C;
     --color-new-game-button: #5A7BC0;
     --color-hover-button: #6687cc;
     --color-white: #fff;
@@ -91,8 +93,15 @@ html {
 }
 
 .highlight-invalid {
-    background-color: #f4b6b6;
-    color: #c0392b;
+    background-color: var(--color-highlight-invalid-cell);
+}
+
+.grid-item.valid-value {
+    color: var(--color-blue);
+}
+
+.grid-item.invalid-value {
+    color: var(--color-red);
 }
 
 #square-0,
@@ -277,7 +286,7 @@ html {
     border: 0;
     border-radius: 5px;
     box-sizing: border-box;
-    color: var(--color-numpad-numbers);
+    color: var(--color-blue);
     cursor: pointer;
     font-size: clamp(32px, 8cqi, 42px);
     font-family: Hauss;

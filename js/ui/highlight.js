@@ -11,17 +11,26 @@ export function highlightSelected(grid, selectedCell) {
 
 }
 
-export function highlightConflict(grid, conflictCells){
+export function highlightConflict(grid, conflictMatrix) {
+
     const cells = grid.querySelectorAll('.grid-item');
     cells.forEach((currentCell) => {
         currentCell.classList.remove('highlight-invalid');
     });
 
-    conflictCells.forEach(({rowIndex,columnIndex}) =>{
-         const cell = grid.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
-         if(cell)
-            cell.classList.add('highlight-invalid');
-    })
+    conflictMatrix.forEach((row, rowIndex) => {
+        row.forEach((conflict, columnIndex) => {
+
+            if (conflict.length === 0)
+                return;
+            
+            const cell = grid.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
+            if (cell)
+                cell.classList.add('highlight-invalid');
+
+        });
+    });
+
 }
 
 

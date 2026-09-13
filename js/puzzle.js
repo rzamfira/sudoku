@@ -4,10 +4,9 @@ export function getCellConflict(userPuzzle) {
 
     userPuzzle.forEach((currentRow, currentRowIndex) => {
         currentRow.forEach((currentValue, currentColumnIndex) => {
-
+            
             if (currentValue === '.')
                 return;
-
             const currentCellIndex = currentRowIndex * 9 + currentColumnIndex;
 
             userPuzzle.forEach((verifyRow, verifyRowIndex) => {
@@ -20,29 +19,9 @@ export function getCellConflict(userPuzzle) {
                     if (verifyCellIndex <= currentCellIndex)
                         return;
 
-                    if (currentValue !== verifyValue)
-                        return;
-
-                    const currentSquareRow = Math.floor(currentRowIndex / 3);
-                    const currentSquareColumn = Math.floor(currentColumnIndex / 3);
-
-                    const verifySquareRow = Math.floor(verifyRowIndex / 3);
-                    const verifySquareColumn = Math.floor(verifyColumnIndex / 3);
-
-                    if (currentRowIndex === verifyRowIndex || currentColumnIndex === verifyColumnIndex ||
-                        (currentSquareRow === verifySquareRow && currentSquareColumn === verifySquareColumn)) {
-
-                        conflictMatrix[currentRowIndex][currentColumnIndex].push({
-                            rowIndex: verifyRowIndex,
-                            columnIndex: verifyColumnIndex
-                        });
-
-                        conflictMatrix[verifyRowIndex][verifyColumnIndex].push({
-                            rowIndex: currentRowIndex,
-                            columnIndex: currentColumnIndex
-                        });
-
-                    }
+                    const currentCell = { value: currentValue, rowIndex: currentRowIndex, columnIndex: currentColumnIndex };
+                    const verifyCell = { value: verifyValue, rowIndex: verifyRowIndex, columnIndex: verifyColumnIndex };
+                    verifyConflict(currentCell, verifyCell, conflictMatrix);
 
                 });
             });
@@ -66,4 +45,31 @@ function createEmptyConflicts() {
     }
 
     return conflicts;
+}
+
+function verifyConflict(currentCell, verifyCell, conflictMatrix) {
+
+    if (currentCell.value !== verifyCell.value)
+        return;
+
+    const currentSquareRow = Math.floor(currentCell.rowIndex / 3);
+    const currentSquareColumn = Math.floor(currentCell.columnIndex / 3);
+
+    const verifySquareRow = Math.floor(verifyCell.rowIndex / 3);
+    const verifySquareColumn = Math.floor(verifyCell.columnIndex / 3);
+
+    if (currentCell.rowIndex === verifyCell.rowIndex || currentCell.columnIndex === verifyCell.columnIndex ||
+        (currentSquareRow === verifySquareRow && currentSquareColumn === verifySquareColumn)) {
+
+        conflictMatrix[currentCell.rowIndex][currentCell.columnIndex].push({
+            rowIndex: verifyCell.rowIndex,
+            columnIndex: verifyCell.columnIndex
+        });
+
+        conflictMatrix[verifyCell.rowIndex][verifyCell.columnIndex].push({
+            rowIndex: currentCell.rowIndex,
+            columnIndex: currentCell.columnIndex
+        });
+
+    }
 }

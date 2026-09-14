@@ -24,8 +24,9 @@
     --color-timer: #6e7c8c;
     --color-blue: #325AAF;
     --color-red: #E55C6C;
+    --color-numpad-button-hover: #dce3ed;
     --color-new-game-button: #5A7BC0;
-    --color-hover-button: #6687cc;
+    --color-new-game-button-hover: #7091d5;
     --color-white: #fff;
 }
 
@@ -293,6 +294,10 @@ html {
     font-weight: 400;
 }
 
+.numpad-button:hover {
+    background-color: var(--color-numpad-button-hover);
+}
+
 .new-game-section {
     width: 100%;
 }
@@ -313,5 +318,5 @@ html {
 }
 
 .new-game-button:hover {
-    background-color: var(--color-hover-button);
+    background-color: var(--color-new-game-button-hover);
 }

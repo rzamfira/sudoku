@@ -12,6 +12,7 @@ createLayout(); // initialize grid & controls panel
 dispatcher.dispatch({ type: 'NEW-GAME' }); // generate the default sudoku values for a new game
 
 const grid = document.querySelector('.grid-section');
+const numpad = document.querySelector('.numpad-section');
 
 const newGameButton = document.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
@@ -29,6 +30,12 @@ grid.addEventListener('click', (event) => {
 document.addEventListener('keydown', (event) => {
     if (event.key >= '1' && event.key <= '9') {
         dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.key });
+    }
+});
+
+numpad.addEventListener('click', (event) => {
+    if (event.target.classList.contains('numpad-button')) {
+        dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.target.dataset.value });
     }
 });
 

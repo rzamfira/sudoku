@@ -31,12 +31,20 @@ document.addEventListener('keydown', (event) => {
     if (event.key >= '1' && event.key <= '9') {
         dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.key });
     }
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+        dispatcher.dispatch({ type: 'ERASE-VALUE' });
+    }
 });
 
 numpad.addEventListener('click', (event) => {
     if (event.target.classList.contains('numpad-button')) {
         dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.target.dataset.value });
     }
+});
+
+const eraseButton = document.querySelector('#erase-button');
+eraseButton.addEventListener('click', () => {
+    dispatcher.dispatch({ type: 'ERASE-VALUE' })
 });
 
 

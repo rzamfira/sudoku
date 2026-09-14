@@ -24,7 +24,7 @@
     --color-timer: #6e7c8c;
     --color-blue: #325AAF;
     --color-red: #E55C6C;
-    --color-numpad-button-hover: #dce3ed;
+    --color-button-hover: #dce3ed;
     --color-new-game-button: #5A7BC0;
     --color-new-game-button-hover: #7091d5;
     --color-white: #fff;
@@ -250,6 +250,10 @@ html {
     position: relative;
 }
 
+.game-action-button:hover {
+    background-color: var(--color-button-hover);
+}
+
 .icon-game-action {
     height: 100%;
     left: 50%;
@@ -295,7 +299,7 @@ html {
 }
 
 .numpad-button:hover {
-    background-color: var(--color-numpad-button-hover);
+    background-color: var(--color-button-hover);
 }
 
 .new-game-section {

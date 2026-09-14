@@ -46,25 +46,19 @@ export class SudokuState {
 
     setCellValue(value) {
 
-        if (!this.selectedCell ||
-            this.initialPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] !== '.')
+        if (!this.isCellEditable())
             return;
 
-        const previousValue = this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex];
-        const previousNotes = this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex];
+        return this.applyCellChange('insert-value', value);
 
-        this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] = value;
-        this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex] = [];
+    }
 
-        return {
-            type: 'value',
-            rowIndex: this.selectedCell.rowIndex,
-            columnIndex: this.selectedCell.columnIndex,
-            previousValue: previousValue,
-            currentValue: value,
-            previousNotes: previousNotes,
-            currentNotes: []
-        };
+    eraseValue() {
+
+        if (!this.isCellEditable() || this.isCellEmpty())
+            return;
+
+        return this.applyCellChange('erase-value', '.');
 
     }
 
@@ -74,6 +68,40 @@ export class SudokuState {
 
     setCellConflict(conflictMatrix) {
         this.conflictMatrix = conflictMatrix;
+    }
+
+
+    isCellEditable() {
+        if (!this.selectedCell ||
+            this.initialPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] !== '.')
+            return false;
+        return true;
+    }
+
+    isCellEmpty() {
+        if (this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] !== '.' ||
+            this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex].length)
+            return false;
+        return true;
+    }
+
+    applyCellChange(type, value) {
+
+        const previousValue = this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex];
+        const previousNotes = this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex];
+
+        this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] = value;
+        this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex] = [];
+
+        return {
+            type: type,
+            rowIndex: this.selectedCell.rowIndex,
+            columnIndex: this.selectedCell.columnIndex,
+            previousValue: previousValue,
+            currentValue: value,
+            previousNotes: previousNotes,
+            currentNotes: []
+        };
     }
 
 }

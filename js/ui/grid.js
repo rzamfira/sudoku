@@ -1,4 +1,4 @@
-import { highlightConflict, highlightSelected } from "./highlight.js";
+import { highlightConflict, highlightNeighborsAndSameValue, highlightValidValue, removeHighlight } from "./highlight.js";
 
 // function to create the sudoku grid
 export function createGrid() {
@@ -9,36 +9,24 @@ export function createGrid() {
     const sudokuSquares = createSudokuSquares(grid);
     createGridCells(sudokuSquares);
 
-    const firstCell = grid.querySelector('.grid-item');
-    highlightSelected(grid, firstCell);
-
     return grid;
 
 }
 
 export function renderGrid(currentState) {
 
-    const grid = document.querySelector('.grid-section');
-    const puzzle = currentState.getUserPuzzle();
+    const cells = document.querySelectorAll(`.grid-item`);
 
-    puzzle.forEach((row, rowIndex) => {
-        row.forEach((value, columnIndex) => {
+    const selectedCell = document.querySelector(
+        `.grid-item` +
+        `[data-row-index="${currentState.getSelectedCell().rowIndex}"]` +
+        `[data-column-index="${currentState.getSelectedCell().columnIndex}"]`);
 
-            const cell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
-
-            cell.classList.remove('valid-value', 'invalid-value');
-
-            updateCellDisplay(cell, value, currentState, rowIndex, columnIndex);
-
-        });
+    cells.forEach(currentCell => {
+        updateCellDisplay(currentCell, currentState);
     });
 
-    const rowIndex = currentState.getSelectedCell().rowIndex;
-    const columnIndex = currentState.getSelectedCell().columnIndex;
-    const selectedCell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
-
-    highlightSelected(grid, selectedCell);
-    highlightConflict(grid, currentState.getConflictMatrix());
+    selectedCell.classList.add('selected-cell');
 
 
 }
@@ -86,25 +74,23 @@ function createGridCells(sudokuSquares) {
 
 }
 
-function updateCellDisplay(cell, value, currentState, rowIndex, columnIndex) {
+function updateCellDisplay(currentCell, currentState) {
 
-    cell.classList.remove('valid-value', 'invalid-value');
-
-    if (currentState.isCellEmpty(rowIndex, columnIndex)) {
-        cell.textContent = '';
-        return;
+    removeHighlight(currentCell);
+    if (currentState.isCellEmpty(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex)) {
+        currentCell.textContent = '';
     }
 
-    cell.textContent = value;
-
-    if (currentState.isCellEditable(rowIndex, columnIndex)) {
-        if (currentState.hasConflict(rowIndex, columnIndex)) {
-            cell.classList.add('invalid-value');
-        }
-        else {
-            cell.classList.add('valid-value');
-        }
+    else {
+        currentCell.textContent = currentState.getUserPuzzle()[currentCell.dataset.rowIndex][currentCell.dataset.columnIndex];
     }
+
+    highlightNeighborsAndSameValue(currentCell, currentState.getSelectedCell(), currentState.getUserPuzzle());
+
+    highlightValidValue(currentCell, currentState);
+
+    highlightConflict(currentCell, currentState.getConflictMatrix());
+
 
 }
 

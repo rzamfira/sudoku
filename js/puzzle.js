@@ -21,7 +21,7 @@ export function getCellConflict(userPuzzle) {
 
                     const currentCell = { value: currentValue, rowIndex: currentRowIndex, columnIndex: currentColumnIndex };
                     const verifyCell = { value: verifyValue, rowIndex: verifyRowIndex, columnIndex: verifyColumnIndex };
-                    verifyConflict(currentCell, verifyCell, conflictMatrix);
+                    registerConflict(currentCell, verifyCell, conflictMatrix);
 
                 });
             });
@@ -34,20 +34,12 @@ export function getCellConflict(userPuzzle) {
 
 function createEmptyConflicts() {
 
-    const conflicts = [];
+    return Array.from({ length: 9 }, () =>
+            Array.from({ length: 9 }, () => []));
 
-    for (let row = 0; row < 9; row++) {
-        const currentRow = [];
-        for (let column = 0; column < 9; column++) {
-            currentRow.push([]);
-        }
-        conflicts.push(currentRow);
-    }
-
-    return conflicts;
 }
 
-function verifyConflict(currentCell, verifyCell, conflictMatrix) {
+function registerConflict(currentCell, verifyCell, conflictMatrix) {
 
     if (currentCell.value !== verifyCell.value)
         return;

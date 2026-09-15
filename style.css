@@ -89,12 +89,12 @@ html {
     background-color: var(--color-highlight-same-value);
 }
 
-.selected-cell{
-    background-color: var(--color-highlight-selected);
-}
-
 .highlight-invalid {
     background-color: var(--color-highlight-invalid-cell);
+}
+
+.selected-cell{
+    background-color: var(--color-highlight-selected);
 }
 
 .grid-item.valid-value {
@@ -105,10 +105,10 @@ html {
     color: var(--color-red);
 }
 
-.grid-item.selected-cell.highlight-invalid{
+/* .grid-item.selected-cell.highlight-invalid{
     background-color: var(--color-highlight-selected);
     color: var(--color-red);
-}
+} */
 
 #square-0,
 #square-1,

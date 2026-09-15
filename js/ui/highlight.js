@@ -1,60 +1,43 @@
-export function highlightSelected(grid, selectedCell) {
+export function highlightNeighborsAndSameValue(cell, selectedCell, puzzle) {
 
-    const cells = grid.querySelectorAll('.grid-item');
-    cells.forEach((currentCell) => {
-
-        highlightNeighbors(currentCell, selectedCell);
-
-    });
-
-    selectedCell.classList.add("selected-cell");
-
-}
-
-export function highlightConflict(grid, conflictMatrix) {
-
-    const cells = grid.querySelectorAll('.grid-item');
-    cells.forEach((currentCell) => {
-        currentCell.classList.remove('highlight-invalid');
-    });
-
-    conflictMatrix.forEach((row, rowIndex) => {
-        row.forEach((conflict, columnIndex) => {
-
-            if (conflict.length === 0)
-                return;
-            
-            const cell = grid.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
-            if (cell)
-                cell.classList.add('highlight-invalid');
-
-        });
-    });
-
-}
-
-
-// function to highlight the row, column & square of the selected cell
-function highlightNeighbors(cell, selectedCell) {
-
-    removeHighlight(cell);
-
-    if (cell.dataset.rowIndex === selectedCell.dataset.rowIndex ||
-        cell.dataset.columnIndex === selectedCell.dataset.columnIndex ||
-        cell.dataset.squareIndex === selectedCell.dataset.squareIndex) {
+    if (cell.dataset.rowIndex === selectedCell.rowIndex ||
+        cell.dataset.columnIndex === selectedCell.columnIndex ||
+        cell.dataset.squareIndex === selectedCell.squareIndex) {
         cell.classList.add('highlight-neighbors');
     }
 
-    if (cell.textContent != '' && cell.textContent === selectedCell.textContent) {
+    if (cell.textContent != '' && cell.textContent === puzzle[selectedCell.rowIndex][selectedCell.columnIndex]) {
         cell.classList.add('highlight-value'); // highlight the elements with same value too
     }
 
 }
 
-function removeHighlight(cell) {
+export function highlightValidValue(cell, currentState) {
+    if (currentState.isCellEditable(cell.dataset.rowIndex, cell.dataset.columnIndex)) {
+        if (currentState.hasConflict(cell.dataset.rowIndex, cell.dataset.columnIndex)) {
+            cell.classList.add('invalid-value');
+        }
+        else {
+            cell.classList.add('valid-value');
+        }
+    }
+}
 
-    cell.classList.remove('highlight-neighbors');
-    cell.classList.remove('highlight-value');
+export function highlightConflict(cell, conflictMatrix) {
+
+    if (conflictMatrix[cell.dataset.rowIndex][cell.dataset.columnIndex].length === 0)
+        return;
+
+    cell.classList.add('highlight-invalid');
+
+}
+
+
+export function removeHighlight(cell) {
+
+    cell.classList.remove('highlight-neighbors', 'highlight-value');
+    cell.classList.remove('invalid-value', 'valid-value');
+    cell.classList.remove('highlight-invalid');
     cell.classList.remove('selected-cell');
 
 }

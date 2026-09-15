@@ -1,4 +1,5 @@
 import { getCellConflict } from "./puzzle.js";
+import { renderGrid } from "./ui/grid.js";
 
 export class SudokuState {
 
@@ -7,31 +8,15 @@ export class SudokuState {
     #selectedCell
     #conflictMatrix
     #notes
-    #history
-    #time
-    #isPaused
+
 
     constructor(initialPuzzle) {
 
-        this.#initialPuzzle = this.#copyPuzzle(initialPuzzle);
-        this.#userPuzzle = this.#copyPuzzle(initialPuzzle);
-        this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
-        this.#conflictMatrix = this.#createEmptyMatrix();
-        this.#notes = this.#createEmptyMatrix();
-        this.#history = [];
-        this.#time = 0;
-        this.#isPaused = false;
-
-    }
-
-    #copyPuzzle(puzzle) {
-        return puzzle.map(row => row.map(value => value));
-    }
-
-    #createEmptyMatrix() {
-
-        return Array.from({ length: 9 }, () =>
-            Array.from({ length: 9 }, () => []));
+        this.#initialPuzzle = copyPuzzle(initialPuzzle);
+        this.#userPuzzle = copyPuzzle(initialPuzzle);
+        this.#selectedCell = { rowIndex: '0', columnIndex: '0', squareIndex: '0' };
+        this.#conflictMatrix = createEmptyMatrix();
+        this.#notes = createEmptyMatrix();
 
     }
 
@@ -57,20 +42,20 @@ export class SudokuState {
 
     }
 
-    cellChange(action) {
+    cellChange(value) {
 
-        if (action.type === 'insert-value') {
-            if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
+        if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
+            return;
+
+        if (value === undefined) {
+            if (this.isCellEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex)) {
                 return;
-            this.#applyCellChange(action.value);
+            }
+            value = '.';
         }
 
-        if (action.type === 'erase-value') {
-            if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex) ||
-                this.isCellEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
-                return;
-            this.#applyCellChange('.');
-        }
+        this.#applyCellChange(value);
+        renderGrid(this);
 
     }
 
@@ -110,9 +95,23 @@ export class SudokuState {
 
 }
 
-export function initializeState(puzzle) {
+export function initializeGame(puzzle) {
 
-    return new SudokuState(puzzle);
+    const gameState = new SudokuState(puzzle);
+    renderGrid(gameState);
+    return gameState;
 
 }
+
+function copyPuzzle(puzzle) {
+    return puzzle.map(row => row.map(value => value));
+}
+
+function createEmptyMatrix() {
+
+    return Array.from({ length: 9 }, () =>
+        Array.from({ length: 9 }, () => []));
+
+}
+
 

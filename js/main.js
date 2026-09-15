@@ -1,50 +1,55 @@
 import { createLayout } from './ui/appLayout.js';
-import { Dispatcher } from './dispatch.js';
-import { stateObserver } from './observers/stateObserver.js';
-import { gridObserver } from './observers/gridObserver.js';
+import { initializeState } from './state.js';
+import { renderGrid } from './ui/grid.js';
+import { generateSudokuGame } from './sudokuGenerator.js';
+import { highlightSelected } from './ui/highlight.js';
 
-const dispatcher = new Dispatcher();
-
-dispatcher.subscribe(stateObserver);
-dispatcher.subscribe(gridObserver);
+let puzzle = generateSudokuGame();
+let currentState = initializeState(puzzle);
 
 createLayout(); // initialize grid & controls panel
-dispatcher.dispatch({ type: 'NEW-GAME' }); // generate the default sudoku values for a new game
+renderGrid(currentState); // generate the default sudoku values for a new game
 
 const grid = document.querySelector('.grid-section');
-const numpad = document.querySelector('.numpad-section');
 
 const newGameButton = document.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
-    dispatcher.dispatch({ type: 'NEW-GAME' });
+    puzzle = generateSudokuGame();
+    currentState = initializeState(puzzle);
+    renderGrid(currentState);
 });
-
 
 grid.addEventListener('click', (event) => {
     if (event.target.classList.contains('grid-item')) {
-        dispatcher.dispatch({ type: 'SELECT-CELL', cell: event.target });
+        currentState.setSelectedCell(event.target);
+        highlightSelected(grid, event.target);
     }
-
 });
 
 document.addEventListener('keydown', (event) => {
     if (event.key >= '1' && event.key <= '9') {
-        dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.key });
+        currentState.cellChange({ type: 'insert-value', value: event.key });
+        renderGrid(currentState);
     }
+
     if (event.key === 'Backspace' || event.key === 'Delete') {
-        dispatcher.dispatch({ type: 'ERASE-VALUE' });
+        currentState.cellChange({ type: 'erase-value' });
+        renderGrid(currentState);
     }
 });
 
+const numpad = document.querySelector('.numpad-section');
 numpad.addEventListener('click', (event) => {
     if (event.target.classList.contains('numpad-button')) {
-        dispatcher.dispatch({ type: 'INSERT-VALUE', value: event.target.dataset.value });
+        currentState.cellChange({ type: 'insert-value', value: event.target.dataset.value });
+        renderGrid(currentState);
     }
 });
 
 const eraseButton = document.querySelector('#erase-button');
 eraseButton.addEventListener('click', () => {
-    dispatcher.dispatch({ type: 'ERASE-VALUE' })
+    currentState.cellChange({ type: 'erase-value' });
+    renderGrid(currentState);
 });
 
 

@@ -19,7 +19,7 @@ export function createGrid() {
 export function renderGrid(currentState) {
 
     const grid = document.querySelector('.grid-section');
-    const puzzle = currentState.userPuzzle;
+    const puzzle = currentState.getUserPuzzle();
 
     puzzle.forEach((row, rowIndex) => {
         row.forEach((value, columnIndex) => {
@@ -33,12 +33,13 @@ export function renderGrid(currentState) {
         });
     });
 
-    const rowIndex = currentState.selectedCell.rowIndex;
-    const columnIndex = currentState.selectedCell.columnIndex;
+    const rowIndex = currentState.getSelectedCell().rowIndex;
+    const columnIndex = currentState.getSelectedCell().columnIndex;
     const selectedCell = document.querySelector(`.grid-item[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
 
-    highlightConflict(grid, currentState.conflictMatrix);
     highlightSelected(grid, selectedCell);
+    highlightConflict(grid, currentState.getConflictMatrix());
+
 
 }
 
@@ -89,15 +90,15 @@ function updateCellDisplay(cell, value, currentState, rowIndex, columnIndex) {
 
     cell.classList.remove('valid-value', 'invalid-value');
 
-    if (value === '.') {
+    if (currentState.isCellEmpty(rowIndex, columnIndex)) {
         cell.textContent = '';
         return;
     }
 
     cell.textContent = value;
 
-    if (currentState.initialPuzzle[rowIndex][columnIndex] === '.') {
-        if (currentState.conflictMatrix[rowIndex][columnIndex].length) {
+    if (currentState.isCellEditable(rowIndex, columnIndex)) {
+        if (currentState.hasConflict(rowIndex, columnIndex)) {
             cell.classList.add('invalid-value');
         }
         else {

@@ -1,42 +1,55 @@
+import { getCellConflict } from "./puzzle.js";
+
 export class SudokuState {
+
+    #initialPuzzle
+    #userPuzzle
+    #selectedCell
+    #conflictMatrix
+    #notes
+    #history
+    #time
+    #isPaused
 
     constructor(initialPuzzle) {
 
-        this.initialPuzzle = initialPuzzle;
-        this.userPuzzle = this.copyPuzzle(initialPuzzle);
-        this.selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
-        this.conflictMatrix = this.createEmptyMatrix();
-        this.notes = this.createEmptyMatrix();
-        this.history = [];
-        this.time = 0;
-        this.isPaused = false;
-        this.isWon = false;
+        this.#initialPuzzle = this.#copyPuzzle(initialPuzzle);
+        this.#userPuzzle = this.#copyPuzzle(initialPuzzle);
+        this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
+        this.#conflictMatrix = this.#createEmptyMatrix();
+        this.#notes = this.#createEmptyMatrix();
+        this.#history = [];
+        this.#time = 0;
+        this.#isPaused = false;
 
     }
 
-    copyPuzzle(puzzle) {
+    #copyPuzzle(puzzle) {
         return puzzle.map(row => row.map(value => value));
     }
 
-    createEmptyMatrix() {
+    #createEmptyMatrix() {
 
-        const matrix = [];
+        return Array.from({ length: 9 }, () =>
+            Array.from({ length: 9 }, () => []));
 
-        for (let row = 0; row < 9; row++) {
-            const currentRow = [];
-            for (let column = 0; column < 9; column++) {
-                currentRow.push([]);
-            }
-            matrix.push(currentRow);
-        }
+    }
 
-        return matrix;
+    getUserPuzzle() {
+        return this.#userPuzzle;
+    }
 
+    getSelectedCell() {
+        return this.#selectedCell;
+    }
+
+    getConflictMatrix() {
+        return this.#conflictMatrix;
     }
 
     setSelectedCell(selectedCell) {
 
-        this.selectedCell = {
+        this.#selectedCell = {
             rowIndex: selectedCell.dataset.rowIndex,
             columnIndex: selectedCell.dataset.columnIndex,
             squareIndex: selectedCell.dataset.squareIndex
@@ -44,77 +57,62 @@ export class SudokuState {
 
     }
 
-    setCellValue(value) {
+    cellChange(action) {
 
-        if (!this.isCellEditable())
-            return;
+        if (action.type === 'insert-value') {
+            if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
+                return;
+            this.#applyCellChange(action.value);
+        }
 
-        return this.applyCellChange('insert-value', value);
+        if (action.type === 'erase-value') {
+            if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex) ||
+                this.isCellEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
+                return;
+            this.#applyCellChange('.');
+        }
 
     }
 
-    eraseValue() {
+    isCellEditable(rowIndex, columnIndex) {
 
-        if (!this.isCellEditable() || this.isCellEmpty())
-            return;
-
-        return this.applyCellChange('erase-value', '.');
+        const isInitialCellEmpty = this.#initialPuzzle[rowIndex][columnIndex] === '.';
+        return isInitialCellEmpty;
 
     }
 
-    addHistory(action) {
-        this.history.push(action);
+    isCellEmpty(rowIndex, columnIndex) {
+
+        const isUserCellEmpty = this.#userPuzzle[rowIndex][columnIndex] === '.';
+        const areNotesEmpty = this.#notes[rowIndex][columnIndex].length === 0;
+        return isUserCellEmpty && areNotesEmpty;
+
     }
 
-    setCellConflict(conflictMatrix) {
-        this.conflictMatrix = conflictMatrix;
+    hasConflict(rowIndex, columnIndex) {
+        const hasConflict = this.#conflictMatrix[rowIndex][columnIndex].length > 0;
+        return hasConflict;
     }
 
+    #applyCellChange(value) {
 
-    isCellEditable() {
-        if (!this.selectedCell ||
-            this.initialPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] !== '.')
-            return false;
-        return true;
+        this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
+        this.#notes[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = [];
+
+        const cellConflict = getCellConflict(this.#userPuzzle);
+        this.#setCellConflictMatrix(cellConflict);
+
     }
 
-    isCellEmpty() {
-        if (this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] !== '.' ||
-            this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex].length)
-            return false;
-        return true;
-    }
-
-    applyCellChange(type, value) {
-
-        const previousValue = this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex];
-        const previousNotes = this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex];
-
-        this.userPuzzle[this.selectedCell.rowIndex][this.selectedCell.columnIndex] = value;
-        this.notes[this.selectedCell.rowIndex][this.selectedCell.columnIndex] = [];
-
-        return {
-            type: type,
-            rowIndex: this.selectedCell.rowIndex,
-            columnIndex: this.selectedCell.columnIndex,
-            previousValue: previousValue,
-            currentValue: value,
-            previousNotes: previousNotes,
-            currentNotes: []
-        };
+    #setCellConflictMatrix(conflictMatrix) {
+        this.#conflictMatrix = conflictMatrix;
     }
 
 }
-
-let currentState;
 
 export function initializeState(puzzle) {
 
-    currentState = new SudokuState(puzzle);
-    return currentState;
+    return new SudokuState(puzzle);
 
 }
 
-export function getCurrentState() {
-    return currentState;
-}

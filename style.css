@@ -105,6 +105,11 @@ html {
     color: var(--color-red);
 }
 
+.grid-item.selected-cell.highlight-invalid{
+    background-color: var(--color-highlight-selected);
+    color: var(--color-red);
+}
+
 #square-0,
 #square-1,
 #square-3,

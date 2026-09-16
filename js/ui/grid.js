@@ -1,4 +1,4 @@
-import { highlightConflict, highlightNeighborsAndSameValue, highlightValidValue, removeHighlight } from "./highlight.js";
+import { highlightConflict, highlightInputValue, highlightSelectedCell,  removeHighlight } from "./highlight.js";
 
 // function to create the sudoku grid
 export function createGrid() {
@@ -17,17 +17,9 @@ export function renderGrid(currentState) {
 
     const cells = document.querySelectorAll(`.grid-item`);
 
-    const selectedCell = document.querySelector(
-        `.grid-item` +
-        `[data-row-index="${currentState.getSelectedCell().rowIndex}"]` +
-        `[data-column-index="${currentState.getSelectedCell().columnIndex}"]`);
-
     cells.forEach(currentCell => {
         updateCellDisplay(currentCell, currentState);
     });
-
-    selectedCell.classList.add('selected-cell');
-
 
 }
 
@@ -85,9 +77,9 @@ function updateCellDisplay(currentCell, currentState) {
         currentCell.textContent = currentState.getUserPuzzle()[currentCell.dataset.rowIndex][currentCell.dataset.columnIndex];
     }
 
-    highlightNeighborsAndSameValue(currentCell, currentState.getSelectedCell(), currentState.getUserPuzzle());
+    highlightSelectedCell(currentCell, currentState.getSelectedCell(), currentState.getUserPuzzle());
 
-    highlightValidValue(currentCell, currentState);
+    highlightInputValue(currentCell, currentState);
 
     highlightConflict(currentCell, currentState.getConflictMatrix());
 

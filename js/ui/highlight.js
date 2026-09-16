@@ -1,4 +1,8 @@
-export function highlightNeighborsAndSameValue(cell, selectedCell, puzzle) {
+export function highlightSelectedCell(cell, selectedCell, puzzle) {
+
+    if (cell.dataset.rowIndex == selectedCell.rowIndex && cell.dataset.columnIndex == selectedCell.columnIndex) {
+        cell.classList.add('selected-cell');
+    }
 
     if (cell.dataset.rowIndex == selectedCell.rowIndex ||
         cell.dataset.columnIndex == selectedCell.columnIndex ||
@@ -12,7 +16,7 @@ export function highlightNeighborsAndSameValue(cell, selectedCell, puzzle) {
 
 }
 
-export function highlightValidValue(cell, currentState) {
+export function highlightInputValue(cell, currentState) {
     if (currentState.isCellEditable(cell.dataset.rowIndex, cell.dataset.columnIndex)) {
         if (currentState.hasConflict(cell.dataset.rowIndex, cell.dataset.columnIndex)) {
             cell.classList.add('invalid-value');
@@ -35,9 +39,8 @@ export function highlightConflict(cell, conflictMatrix) {
 
 export function removeHighlight(cell) {
 
-    cell.classList.remove('highlight-neighbors', 'highlight-value');
+    cell.classList.remove('selected-cell', 'highlight-neighbors', 'highlight-value');
     cell.classList.remove('invalid-value', 'valid-value');
     cell.classList.remove('highlight-invalid');
-    cell.classList.remove('selected-cell');
 
 }

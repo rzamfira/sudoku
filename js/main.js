@@ -19,7 +19,6 @@ newGameButton.addEventListener('click', () => {
 grid.addEventListener('click', (event) => {
     if (event.target.classList.contains('grid-item')) {
         currentState.setSelectedCell(event.target);
-        renderGrid(currentState);
     }
 });
 

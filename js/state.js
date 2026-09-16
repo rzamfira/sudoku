@@ -39,6 +39,7 @@ export class SudokuState {
             columnIndex: selectedCell.dataset.columnIndex,
             squareIndex: selectedCell.dataset.squareIndex
         };
+        renderGrid(this);
 
     }
 

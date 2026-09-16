@@ -45,17 +45,18 @@ export class SudokuState {
 
     cellChange(value) {
 
+        let modifyValue = value;
         if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
             return;
 
-        if (value === undefined) {
+        if (modifyValue === undefined) {
             if (this.isCellEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex)) {
                 return;
             }
-            value = '.';
+            modifyValue = '.';
         }
 
-        this.#applyCellChange(value);
+        this.#applyCellChange(modifyValue);
         renderGrid(this);
 
     }
@@ -80,14 +81,13 @@ export class SudokuState {
         return hasConflict;
     }
 
-    #applyCellChange(value) {
+    #applyCellChange(newValue) {
 
         const previousValue = this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
-        this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
-        this.#notes[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = [];
+        this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = newValue;
 
-        const cellConflictMatrix = this.getConflictMatrix();
-        updateConflictMatrix(cellConflictMatrix, this.#userPuzzle, this.#selectedCell, value, previousValue);
+        let cellConflictMatrix = this.getConflictMatrix();
+        cellConflictMatrix = updateConflictMatrix(cellConflictMatrix, this.getSelectedCell(), newValue, previousValue);
         this.#setCellConflictMatrix(cellConflictMatrix);
 
     }

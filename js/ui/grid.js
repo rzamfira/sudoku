@@ -83,7 +83,13 @@ function updateCellDisplay(currentCell, currentState) {
 
     highlightConflict(currentCell, currentState.getConflictMatrix());
 
+}
 
+export function getSelectedCellNeighbors(){
+
+    const cells = document.querySelectorAll(`.highlight-neighbors`)
+    return cells;
+    
 }
 
 

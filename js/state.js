@@ -1,4 +1,4 @@
-import { getCellConflict } from "./puzzle.js";
+import { updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 
 export class SudokuState {
@@ -14,7 +14,7 @@ export class SudokuState {
 
         this.#initialPuzzle = copyPuzzle(initialPuzzle);
         this.#userPuzzle = copyPuzzle(initialPuzzle);
-        this.#selectedCell = { rowIndex: '0', columnIndex: '0', squareIndex: '0' };
+        this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
         this.#conflictMatrix = createEmptyMatrix();
         this.#notes = createEmptyMatrix();
 
@@ -81,11 +81,13 @@ export class SudokuState {
 
     #applyCellChange(value) {
 
+        const previousValue = this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
         this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
         this.#notes[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = [];
 
-        const cellConflict = getCellConflict(this.#userPuzzle);
-        this.#setCellConflictMatrix(cellConflict);
+        const cellConflictMatrix = this.getConflictMatrix();
+        updateConflictMatrix(cellConflictMatrix, this.#userPuzzle, this.#selectedCell, value, previousValue);
+        this.#setCellConflictMatrix(cellConflictMatrix);
 
     }
 

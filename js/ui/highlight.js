@@ -1,8 +1,8 @@
 export function highlightNeighborsAndSameValue(cell, selectedCell, puzzle) {
 
-    if (cell.dataset.rowIndex === selectedCell.rowIndex ||
-        cell.dataset.columnIndex === selectedCell.columnIndex ||
-        cell.dataset.squareIndex === selectedCell.squareIndex) {
+    if (cell.dataset.rowIndex == selectedCell.rowIndex ||
+        cell.dataset.columnIndex == selectedCell.columnIndex ||
+        cell.dataset.squareIndex == selectedCell.squareIndex) {
         cell.classList.add('highlight-neighbors');
     }
 

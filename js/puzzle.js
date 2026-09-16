@@ -1,30 +1,21 @@
-export function getCellConflict(userPuzzle) {
+export function updateConflictMatrix(conflictMatrix, userPuzzle, selectedCell, value, previousValue) {
 
-    const conflictMatrix = createEmptyConflicts();
+    userPuzzle.forEach((row, rowIndex) => {
+        row.forEach((currentValue, columnIndex) => {
 
-    userPuzzle.forEach((currentRow, currentRowIndex) => {
-        currentRow.forEach((currentValue, currentColumnIndex) => {
-            
             if (currentValue === '.')
                 return;
-            const currentCellIndex = currentRowIndex * 9 + currentColumnIndex;
 
-            userPuzzle.forEach((verifyRow, verifyRowIndex) => {
-                verifyRow.forEach((verifyValue, verifyColumnIndex) => {
+            if (isNeighborWithSelectedCell(selectedCell, rowIndex, columnIndex)) {
 
-                    if (verifyValue === '.')
-                        return;
+                if (previousValue === currentValue) {
+                    eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex);
+                }
+                if (value === currentValue) {
+                    addConflict(conflictMatrix, selectedCell, rowIndex, columnIndex);
+                }
 
-                    const verifyCellIndex = verifyRowIndex * 9 + verifyColumnIndex;
-                    if (verifyCellIndex <= currentCellIndex)
-                        return;
-
-                    const currentCell = { value: currentValue, rowIndex: currentRowIndex, columnIndex: currentColumnIndex };
-                    const verifyCell = { value: verifyValue, rowIndex: verifyRowIndex, columnIndex: verifyColumnIndex };
-                    registerConflict(currentCell, verifyCell, conflictMatrix);
-
-                });
-            });
+            }
         });
     });
 
@@ -32,36 +23,49 @@ export function getCellConflict(userPuzzle) {
 
 }
 
-function createEmptyConflicts() {
+function isNeighborWithSelectedCell(selectedCell, rowIndex, columnIndex) {
 
-    return Array.from({ length: 9 }, () =>
-            Array.from({ length: 9 }, () => []));
+    const squareRow = Math.floor(rowIndex / 3);
+    const squareColumn = Math.floor(columnIndex / 3);
+    const squareIndex = squareRow * 3 + squareColumn;
+
+    return (
+        rowIndex == selectedCell.rowIndex ||
+        columnIndex == selectedCell.columnIndex ||
+        squareIndex == selectedCell.squareIndex
+    );
+
 
 }
 
-function registerConflict(currentCell, verifyCell, conflictMatrix) {
+function eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
 
-    if (currentCell.value !== verifyCell.value)
-        return;
+    if (rowIndex != selectedCell.rowIndex || columnIndex != selectedCell.columnIndex) {
 
-    const currentSquareRow = Math.floor(currentCell.rowIndex / 3);
-    const currentSquareColumn = Math.floor(currentCell.columnIndex / 3);
+        conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex] =
+            conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].filter(cell =>
+                cell.rowIndex !== rowIndex ||
+                cell.columnIndex !== columnIndex
+            );
 
-    const verifySquareRow = Math.floor(verifyCell.rowIndex / 3);
-    const verifySquareColumn = Math.floor(verifyCell.columnIndex / 3);
+        conflictMatrix[rowIndex][columnIndex] =
+            conflictMatrix[rowIndex][columnIndex].filter(cell =>
+                cell.rowIndex !== selectedCell.rowIndex ||
+                cell.columnIndex !== selectedCell.columnIndex
+            );
 
-    if (currentCell.rowIndex === verifyCell.rowIndex || currentCell.columnIndex === verifyCell.columnIndex ||
-        (currentSquareRow === verifySquareRow && currentSquareColumn === verifySquareColumn)) {
+    }
+}
 
-        conflictMatrix[currentCell.rowIndex][currentCell.columnIndex].push({
-            rowIndex: verifyCell.rowIndex,
-            columnIndex: verifyCell.columnIndex
+function addConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
+    if (rowIndex != selectedCell.rowIndex || columnIndex != selectedCell.columnIndex) {
+        conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].push({
+            rowIndex: rowIndex,
+            columnIndex: columnIndex
         });
-
-        conflictMatrix[verifyCell.rowIndex][verifyCell.columnIndex].push({
-            rowIndex: currentCell.rowIndex,
-            columnIndex: currentCell.columnIndex
+        conflictMatrix[rowIndex][columnIndex].push({
+            rowIndex: selectedCell.rowIndex,
+            columnIndex: selectedCell.columnIndex
         });
-
     }
 }

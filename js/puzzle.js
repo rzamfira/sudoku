@@ -29,7 +29,7 @@ export function updateConflictMatrix(conflictMatrix, selectedCell, newSelectedVa
 
 function eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
 
-    if (rowIndex != selectedCell.rowIndex || columnIndex != selectedCell.columnIndex) {
+    if (rowIndex !== selectedCell.rowIndex || columnIndex !== selectedCell.columnIndex) {
 
         conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex] =
             conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].filter(cell =>
@@ -44,12 +44,12 @@ function eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) 
             );
 
     }
-    
+
 }
 
 function addConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
 
-    if (rowIndex != selectedCell.rowIndex || columnIndex != selectedCell.columnIndex) {
+    if (rowIndex !== selectedCell.rowIndex || columnIndex !== selectedCell.columnIndex) {
         conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].push({
             rowIndex: rowIndex,
             columnIndex: columnIndex

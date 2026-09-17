@@ -35,12 +35,37 @@ export class SudokuState {
     setSelectedCell(selectedCell) {
 
         this.#selectedCell = {
-            rowIndex: selectedCell.dataset.rowIndex,
-            columnIndex: selectedCell.dataset.columnIndex,
-            squareIndex: selectedCell.dataset.squareIndex
+            rowIndex: Number(selectedCell.dataset.rowIndex),
+            columnIndex: Number(selectedCell.dataset.columnIndex),
+            squareIndex: Number(selectedCell.dataset.squareIndex)
         };
         renderGrid(this);
 
+    }
+
+    changeSelectedCell(direction) {
+
+        if (direction === 'ArrowUp' && this.#selectedCell.rowIndex !== 0) {
+            this.#selectedCell.rowIndex -= 1;
+        }
+        if (direction === 'ArrowDown' && this.#selectedCell.rowIndex !== 8) {
+            this.#selectedCell.rowIndex += 1;
+        }
+        if (direction === 'ArrowLeft' && this.#selectedCell.columnIndex !== 0) {
+            this.#selectedCell.columnIndex -= 1;
+        }
+        if (direction === 'ArrowRight' && this.#selectedCell.columnIndex !== 8) {
+            this.#selectedCell.columnIndex += 1;
+        }
+        this.#recalculateSquareIndex();
+        renderGrid(this);
+
+    }
+
+    #recalculateSquareIndex() {
+        const squareRow = Math.floor(this.#selectedCell.rowIndex / 3);
+        const squareColumn = Math.floor(this.#selectedCell.columnIndex / 3);
+        this.#selectedCell.squareIndex = squareRow * 3 + squareColumn;
     }
 
     cellChange(value) {

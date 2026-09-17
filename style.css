@@ -12,7 +12,7 @@
     font-style: normal;
 }
 
-:root{
+:root {
 
     --color-grid-primary: #344861;
     --color-grid-cell-border: #BFC6D4;
@@ -25,6 +25,7 @@
     --color-blue: #325AAF;
     --color-red: #E55C6C;
     --color-button-hover: #dce3ed;
+    --color-notes-background-text: #adb6c2;
     --color-new-game-button: #5A7BC0;
     --color-new-game-button-hover: #7091d5;
     --color-white: #fff;
@@ -81,7 +82,7 @@ html {
     aspect-ratio: auto;
 }
 
-.highlight-neighbors{
+.highlight-neighbors {
     background-color: var(--color-highlight-neighbors);
 }
 
@@ -93,7 +94,7 @@ html {
     background-color: var(--color-highlight-invalid-cell);
 }
 
-.selected-cell{
+.selected-cell {
     background-color: var(--color-highlight-selected);
 }
 
@@ -173,7 +174,7 @@ html {
     align-items: center;
     gap: 6px;
     color: var(--color-timer);
-    font-family: Hauss,sans-serif;
+    font-family: Hauss, sans-serif;
     font-size: 13px;
     font-stretch: normal;
     font-style: normal;
@@ -257,6 +258,44 @@ html {
 
 .game-action-button:hover {
     background-color: var(--color-button-hover);
+}
+
+#notes-button{
+    position: relative;
+}
+
+#notes-button::after {
+    content: "OFF";
+
+    position: absolute;
+    top: -18%;
+    left: 66%;
+
+    width: 28px;
+    height: 22px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--color-notes-background-text);
+    border-radius: 50px;
+    color: var(--color-white);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+#notes-button.notes-active {
+
+    background-color: var(--color-controls-primary);
+    border-color: var(--color-blue);
+}
+
+#notes-button.notes-active::after {
+
+    content: "ON";
+    background-color: var(--color-blue);
 }
 
 .icon-game-action {

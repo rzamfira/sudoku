@@ -2,6 +2,7 @@ import { createLayout } from './ui/appLayout.js';
 import { initializeGame } from './state.js';
 import { renderGrid } from './ui/grid.js';
 import { generateSudokuGame } from './sudokuGenerator.js';
+import { createNotes } from './ui/notes.js';
 
 
 createLayout(); // initialize grid & controls panel
@@ -36,7 +37,7 @@ document.addEventListener('keydown', (event) => {
         event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         currentState.changeSelectedCell(event.key);
     }
-    
+
 });
 
 const numpad = document.querySelector('.numpad-section');
@@ -49,6 +50,11 @@ numpad.addEventListener('click', (event) => {
 const eraseButton = document.querySelector('#erase-button');
 eraseButton.addEventListener('click', () => {
     currentState.cellChange();
+});
+
+const notesButton = document.querySelector('#notes-button');
+notesButton.addEventListener('click', (event) => {
+    createNotes(event.target)
 });
 
 

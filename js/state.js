@@ -47,37 +47,55 @@ export class SudokuState {
         this.#notesMatrix = notesMatrix;
     }
 
-    setSelectedCell(selectedCell) {
+    setSelectedCell(target) {
+
+        let rowIndex = this.#selectedCell.rowIndex;
+        let columnIndex = this.#selectedCell.columnIndex;
+
+        switch (target) {
+
+            case 'ArrowUp': if (rowIndex > 0) rowIndex--; break;
+            case 'ArrowDown': if (rowIndex < 8) rowIndex++; break;
+            case 'ArrowLeft': if (columnIndex > 0) columnIndex--; break;
+            case 'ArrowRight': if (columnIndex < 8) columnIndex++; break;
+
+            default:
+                rowIndex = Number(target.dataset.rowIndex);
+                columnIndex = Number(target.dataset.columnIndex);
+
+        }
+
+        const squareIndex = calculateSquareIndex(rowIndex, columnIndex);
 
         this.#selectedCell = {
-            rowIndex: Number(selectedCell.dataset.rowIndex),
-            columnIndex: Number(selectedCell.dataset.columnIndex),
-            squareIndex: Number(selectedCell.dataset.squareIndex)
+            rowIndex: rowIndex,
+            columnIndex: columnIndex,
+            squareIndex: squareIndex
         };
 
         renderGrid(this);
 
     }
 
-    changeSelectedCell(direction) {
+    // changeSelectedCell(direction) {
 
-        if (direction === 'ArrowUp' && this.#selectedCell.rowIndex !== 0) {
-            this.#selectedCell.rowIndex -= 1;
-        }
-        if (direction === 'ArrowDown' && this.#selectedCell.rowIndex !== 8) {
-            this.#selectedCell.rowIndex += 1;
-        }
-        if (direction === 'ArrowLeft' && this.#selectedCell.columnIndex !== 0) {
-            this.#selectedCell.columnIndex -= 1;
-        }
-        if (direction === 'ArrowRight' && this.#selectedCell.columnIndex !== 8) {
-            this.#selectedCell.columnIndex += 1;
-        }
+    //     if (direction === 'ArrowUp' && this.#selectedCell.rowIndex !== 0) {
+    //         this.#selectedCell.rowIndex -= 1;
+    //     }
+    //     if (direction === 'ArrowDown' && this.#selectedCell.rowIndex !== 8) {
+    //         this.#selectedCell.rowIndex += 1;
+    //     }
+    //     if (direction === 'ArrowLeft' && this.#selectedCell.columnIndex !== 0) {
+    //         this.#selectedCell.columnIndex -= 1;
+    //     }
+    //     if (direction === 'ArrowRight' && this.#selectedCell.columnIndex !== 8) {
+    //         this.#selectedCell.columnIndex += 1;
+    //     }
 
-        this.#recalculateSquareIndex();
-        renderGrid(this);
+    //     this.#recalculateSquareIndex();
+    //     renderGrid(this);
 
-    }
+    // }
 
     toggleNotesMode() {
         this.#notesMode = !this.#notesMode;
@@ -163,13 +181,6 @@ export class SudokuState {
 
     }
 
-    #recalculateSquareIndex() {
-
-        const squareRow = Math.floor(this.#selectedCell.rowIndex / 3);
-        const squareColumn = Math.floor(this.#selectedCell.columnIndex / 3);
-        this.#selectedCell.squareIndex = squareRow * 3 + squareColumn;
-
-    }
 
 }
 
@@ -197,6 +208,14 @@ function createEmptyNotesMatrix() {
     return Array.from({ length: 9 }, () =>
         Array.from({ length: 9 }, () =>
             Array(10).fill(0)));
+
+}
+
+function calculateSquareIndex(rowIndex, columnIndex) {
+
+    const squareRow = Math.floor(rowIndex / 3);
+    const squareColumn = Math.floor(columnIndex / 3);
+    return (squareRow * 3 + squareColumn);
 
 }
 

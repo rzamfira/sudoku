@@ -33,7 +33,7 @@ document.addEventListener('keydown', (event) => {
 
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown' ||
         event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-        currentState.changeSelectedCell(event.key);
+        currentState.setSelectedCell(event.key);
     }
 
 });

@@ -1,5 +1,6 @@
-import { updateConflictMatrix } from "./puzzle.js";
+import { updateConflictMatrix, updateNotesMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
+import { toggleNotesButtonState } from "./ui/grid.js";
 
 export class SudokuState {
 
@@ -7,7 +8,8 @@ export class SudokuState {
     #userPuzzle
     #selectedCell
     #conflictMatrix
-    #notes
+    #notesMode
+    #notesMatrix
 
 
     constructor(initialPuzzle) {
@@ -16,7 +18,8 @@ export class SudokuState {
         this.#userPuzzle = copyPuzzle(initialPuzzle);
         this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
         this.#conflictMatrix = createEmptyMatrix();
-        this.#notes = createEmptyMatrix();
+        this.#notesMode = false;
+        this.#notesMatrix = createEmptyNotesMatrix();
 
     }
 
@@ -32,6 +35,18 @@ export class SudokuState {
         return this.#conflictMatrix;
     }
 
+    getNotesMatrix() {
+        return this.#notesMatrix;
+    }
+
+    #setCellConflictMatrix(conflictMatrix) {
+        this.#conflictMatrix = conflictMatrix;
+    }
+
+    #setCellNotesMatrix(notesMatrix) {
+        this.#notesMatrix = notesMatrix;
+    }
+
     setSelectedCell(selectedCell) {
 
         this.#selectedCell = {
@@ -39,6 +54,7 @@ export class SudokuState {
             columnIndex: Number(selectedCell.dataset.columnIndex),
             squareIndex: Number(selectedCell.dataset.squareIndex)
         };
+
         renderGrid(this);
 
     }
@@ -57,32 +73,59 @@ export class SudokuState {
         if (direction === 'ArrowRight' && this.#selectedCell.columnIndex !== 8) {
             this.#selectedCell.columnIndex += 1;
         }
+
         this.#recalculateSquareIndex();
         renderGrid(this);
 
     }
 
-    #recalculateSquareIndex() {
-        const squareRow = Math.floor(this.#selectedCell.rowIndex / 3);
-        const squareColumn = Math.floor(this.#selectedCell.columnIndex / 3);
-        this.#selectedCell.squareIndex = squareRow * 3 + squareColumn;
+    toggleNotesMode() {
+        this.#notesMode = !this.#notesMode;
+        toggleNotesButtonState();
     }
 
     cellChange(value) {
 
-        let modifyValue = value;
         if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
             return;
 
-        if (modifyValue === undefined) {
-            if (this.isCellEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex)) {
-                return;
-            }
-            modifyValue = '.';
+        const modifyValue = value ?? '.';
+
+        if (this.#notesMode)
+            this.#applyNotesChange(modifyValue);
+        else
+            this.#applyCellChange(modifyValue);
+
+        renderGrid(this);
+
+    }
+
+    #applyCellChange(newValue) {
+
+        const previousValue = this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
+        this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = newValue;
+        if (!this.areNotesEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex)) {
+            this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex].fill(0);
+            console.log(this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex]);
+        }
+        this.#recalculateConflict(newValue, previousValue);
+
+    }
+
+    #applyNotesChange(newValue) {
+
+        const previousNotes = this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
+
+        if (!this.isCellEmpty(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex)) {
+            const previousValue = this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
+            this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = '.';
+            this.#recalculateConflict('.', previousValue);
         }
 
-        this.#applyCellChange(modifyValue);
-        renderGrid(this);
+        let cellNotesMatrix = this.getNotesMatrix();
+        cellNotesMatrix = updateNotesMatrix(cellNotesMatrix, this.getSelectedCell(), newValue, previousNotes);
+        this.#setCellNotesMatrix(cellNotesMatrix);
+        console.log(this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex]);
 
     }
 
@@ -96,20 +139,23 @@ export class SudokuState {
     isCellEmpty(rowIndex, columnIndex) {
 
         const isUserCellEmpty = this.#userPuzzle[rowIndex][columnIndex] === '.';
-        const areNotesEmpty = this.#notes[rowIndex][columnIndex].length === 0;
-        return isUserCellEmpty && areNotesEmpty;
+        return isUserCellEmpty;
 
+    }
+
+    areNotesEmpty(rowIndex, columnIndex) {
+        const areNotesEmpty = this.#notesMatrix[rowIndex][columnIndex].every(value => value === 0);
+        return areNotesEmpty;
     }
 
     hasConflict(rowIndex, columnIndex) {
+
         const hasConflict = this.#conflictMatrix[rowIndex][columnIndex].length > 0;
         return hasConflict;
+
     }
 
-    #applyCellChange(newValue) {
-
-        const previousValue = this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
-        this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = newValue;
+    #recalculateConflict(newValue, previousValue) {
 
         let cellConflictMatrix = this.getConflictMatrix();
         cellConflictMatrix = updateConflictMatrix(cellConflictMatrix, this.getSelectedCell(), newValue, previousValue);
@@ -117,8 +163,12 @@ export class SudokuState {
 
     }
 
-    #setCellConflictMatrix(conflictMatrix) {
-        this.#conflictMatrix = conflictMatrix;
+    #recalculateSquareIndex() {
+
+        const squareRow = Math.floor(this.#selectedCell.rowIndex / 3);
+        const squareColumn = Math.floor(this.#selectedCell.columnIndex / 3);
+        this.#selectedCell.squareIndex = squareRow * 3 + squareColumn;
+
     }
 
 }
@@ -139,6 +189,14 @@ function createEmptyMatrix() {
 
     return Array.from({ length: 9 }, () =>
         Array.from({ length: 9 }, () => []));
+
+}
+
+function createEmptyNotesMatrix() {
+
+    return Array.from({ length: 9 }, () =>
+        Array.from({ length: 9 }, () =>
+            Array(10).fill(0)));
 
 }
 

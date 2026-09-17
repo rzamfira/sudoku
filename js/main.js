@@ -1,8 +1,6 @@
 import { createLayout } from './ui/appLayout.js';
 import { initializeGame } from './state.js';
-import { renderGrid } from './ui/grid.js';
 import { generateSudokuGame } from './sudokuGenerator.js';
-import { createNotes } from './ui/notes.js';
 
 
 createLayout(); // initialize grid & controls panel
@@ -53,8 +51,8 @@ eraseButton.addEventListener('click', () => {
 });
 
 const notesButton = document.querySelector('#notes-button');
-notesButton.addEventListener('click', (event) => {
-    createNotes(event.target)
+notesButton.addEventListener('click', () => {
+    currentState.toggleNotesMode();
 });
 
 

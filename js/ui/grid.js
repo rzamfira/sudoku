@@ -1,4 +1,4 @@
-import { highlightConflict, highlightInputValue, highlightSelectedCell,  removeHighlight } from "./highlight.js";
+import { highlightConflict, highlightInputValue, highlightSelectedCell, removeHighlight } from "./highlight.js";
 
 // function to create the sudoku grid
 export function createGrid() {
@@ -20,6 +20,20 @@ export function renderGrid(currentState) {
     cells.forEach(currentCell => {
         updateCellDisplay(currentCell, currentState);
     });
+
+}
+
+export function toggleNotesButtonState() {
+
+    const notesButton = document.querySelector('#notes-button');
+
+    if (notesButton.classList.contains('notes-active')) {
+        notesButton.classList.remove('notes-active');
+
+    }
+    else {
+        notesButton.classList.add('notes-active');
+    }
 
 }
 
@@ -85,11 +99,11 @@ function updateCellDisplay(currentCell, currentState) {
 
 }
 
-export function getSelectedCellNeighbors(){
+export function getSelectedCellNeighbors() {
 
     const cells = document.querySelectorAll(`.highlight-neighbors`)
     return cells;
-    
+
 }
 
 

@@ -27,6 +27,21 @@ export function updateConflictMatrix(conflictMatrix, selectedCell, newSelectedVa
 
 }
 
+export function updateNotesMatrix(cellNotesMatrix, selectedCell, newValue, previousNotes) {
+
+    if (newValue === '.') {
+        cellNotesMatrix[selectedCell.rowIndex][selectedCell.columnIndex].fill(0);
+        return cellNotesMatrix;
+    }
+
+    if (previousNotes[newValue] === 0) {
+        cellNotesMatrix[selectedCell.rowIndex][selectedCell.columnIndex][newValue] = 1;
+    }
+    else { cellNotesMatrix[selectedCell.rowIndex][selectedCell.columnIndex][newValue] = 0; }
+    
+    return cellNotesMatrix;
+}
+
 function eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
 
     if (rowIndex !== selectedCell.rowIndex || columnIndex !== selectedCell.columnIndex) {

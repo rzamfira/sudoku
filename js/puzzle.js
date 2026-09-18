@@ -32,34 +32,44 @@ export function getNeighborsOfCell(currentCell) {
 
 }
 
-export function eliminateConflict(conflictMatrix, selectedCell, neighborCell) {
+export function eliminateConflict(conflictCell, conflictMatrix) {
 
-    conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex] =
-        conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].filter(cell =>
-            cell.rowIndex != neighborCell.rowIndex ||
-            cell.columnIndex != neighborCell.columnIndex
+    conflictMatrix =
+        conflictMatrix.filter(cell =>
+            cell.rowIndex != conflictCell.rowIndex ||
+            cell.columnIndex != conflictCell.columnIndex
         );
 
-    conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex] =
-        conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex].filter(cell =>
-            cell.rowIndex != selectedCell.rowIndex ||
-            cell.columnIndex != selectedCell.columnIndex
-        );
+    return conflictMatrix;
+}
+
+export function addConflict(conflictCell, conflictMatrix) {
+
+    conflictMatrix.push({
+        rowIndex: conflictCell.rowIndex,
+        columnIndex: conflictCell.columnIndex
+    });
+
+    return conflictMatrix;
 
 }
 
-export function addConflict(conflictMatrix, selectedCell, neighborCell) {
+export function modifyNotesMatrix(notesMatrix, value) {
 
-    if (neighborCell.rowIndex !== selectedCell.rowIndex || neighborCell.columnIndex !== selectedCell.columnIndex) {
-        conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].push({
-            rowIndex: neighborCell.rowIndex,
-            columnIndex: neighborCell.columnIndex
-        });
-        conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex].push({
-            rowIndex: selectedCell.rowIndex,
-            columnIndex: selectedCell.columnIndex
-        });
+    if (value === '.')
+        return [];
+
+    const index = notesMatrix.indexOf(value);
+
+    if (index !== -1)
+        notesMatrix.splice(index, 1);
+
+    else {
+        notesMatrix.push(value);
+        notesMatrix.sort();
     }
+
+    return notesMatrix;
 
 }
 

@@ -13,8 +13,14 @@ export function createControlPanel() {
 
 }
 
+export function toggleNotesButtonState(notesButton) {
+
+    notesButton.classList.toggle('notes-active');
+
+}
+
 function createTimerSection() {
-    
+
     const timerSection = document.createElement('section');
     timerSection.classList.add('timer-section');
 
@@ -46,14 +52,14 @@ function createTimerSection() {
 
 // function to create the Game Action Buttons (Undo, Erase, Notes)
 function createGameAction() {
-    
+
     const gameActionSection = document.createElement('section');
     gameActionSection.classList.add(`game-action-section`);
 
     gameActionSection.appendChild(createIconButton('undo'));
     gameActionSection.appendChild(createIconButton('erase'));
     gameActionSection.appendChild(createIconButton('notes'));
-    
+
     return gameActionSection;
 
 }
@@ -62,7 +68,7 @@ function createIconButton(type) {
 
     const button = document.createElement('button');
     button.classList.add(`game-action-button`);
-    button.setAttribute('id',`${type}-button`);
+    button.setAttribute('id', `${type}-button`);
     button.dataset.action = `${type}`;
 
     const icon = document.createElement('img');
@@ -71,13 +77,13 @@ function createIconButton(type) {
     icon.alt = `${type}`;
 
     button.appendChild(icon);
-    
+
     return button;
 
 }
 
-function createNumpadSection(){
-    
+function createNumpadSection() {
+
     const numpadSection = document.createElement(`section`);
     numpadSection.classList.add(`numpad-section`);
     for (let i = 1; i <= 9; i++) {
@@ -95,8 +101,8 @@ function createNumpadSection(){
 
 }
 
-function createNewGameSection(){
-    
+function createNewGameSection() {
+
     const newGameSection = document.createElement(`section`);
     newGameSection.classList.add(`new-game-section`);
     const newGameButton = document.createElement('button');

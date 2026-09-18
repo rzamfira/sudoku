@@ -1,4 +1,4 @@
-import { highlightConflict, highlightInputValue, highlightSelectedCell, removeHighlight } from "./highlight.js";
+import { highlightConflicts, highlightSelectedCell, removeHighlight } from "./highlight.js";
 
 // function to create the sudoku grid
 export function createGrid() {
@@ -20,20 +20,6 @@ export function renderGrid(currentState) {
     cells.forEach(currentCell => {
         updateCellDisplay(currentCell, currentState);
     });
-
-}
-
-export function toggleNotesButtonState() {
-
-    const notesButton = document.querySelector('#notes-button');
-
-    if (notesButton.classList.contains('notes-active')) {
-        notesButton.classList.remove('notes-active');
-
-    }
-    else {
-        notesButton.classList.add('notes-active');
-    }
 
 }
 
@@ -83,19 +69,22 @@ function createGridCells(sudokuSquares) {
 function updateCellDisplay(currentCell, currentState) {
 
     removeHighlight(currentCell);
-    if (currentState.isCellEmpty(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex)) {
+
+    const currentValue = currentState.getPuzzleValueFromState(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
+
+    const selectedCell = currentState.getSelectedCell();
+    const selectedValue = currentState.getPuzzleValueFromState(selectedCell.rowIndex, selectedCell.columnIndex);
+
+    const isCellEditable = currentState.isCellEditable(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
+    const hasCellConflicts = currentState.hasCellConflicts(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
+
+    if (currentState.isCellEmpty(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex))
         currentCell.textContent = '';
-    }
+    else
+        currentCell.textContent = currentValue;
 
-    else {
-        currentCell.textContent = currentState.getUserPuzzle()[currentCell.dataset.rowIndex][currentCell.dataset.columnIndex];
-    }
-
-    highlightSelectedCell(currentCell, currentState.getSelectedCell(), currentState.getUserPuzzle());
-
-    highlightInputValue(currentCell, currentState);
-
-    highlightConflict(currentCell, currentState.getConflictMatrix());
+    highlightSelectedCell(currentCell, selectedCell, selectedValue);
+    highlightConflicts(currentCell, isCellEditable, hasCellConflicts);
 
 }
 

@@ -3,23 +3,12 @@ import { initializeGame } from './state.js';
 import { generateSudokuGame } from './sudokuGenerator.js';
 
 
-createLayout(); // initialize grid & controls panel
+createLayout();
 let puzzle = generateSudokuGame();
-let currentState = initializeGame(puzzle); // generate the default sudoku values for a new game
+let currentState = initializeGame(puzzle);
 
 const grid = document.querySelector('.grid-section');
-
-const newGameButton = document.querySelector('.new-game-button');
-newGameButton.addEventListener('click', () => {
-    puzzle = generateSudokuGame();
-    currentState = initializeGame(puzzle);
-});
-
-grid.addEventListener('click', (event) => {
-    if (event.target.classList.contains('grid-item')) {
-        currentState.setSelectedCell(event.target);
-    }
-});
+const controlsPanel = document.querySelector('.controls-section');
 
 document.addEventListener('keydown', (event) => {
 
@@ -38,21 +27,34 @@ document.addEventListener('keydown', (event) => {
 
 });
 
-const numpad = document.querySelector('.numpad-section');
+grid.addEventListener('click', (event) => {
+    if (event.target.classList.contains('grid-item')) {
+        currentState.setSelectedCell(event.target);
+    }
+});
+
+const newGameButton = controlsPanel.querySelector('.new-game-button');
+newGameButton.addEventListener('click', () => {
+    puzzle = generateSudokuGame();
+    currentState = initializeGame(puzzle);
+});
+
+
+const numpad = controlsPanel.querySelector('.numpad-section');
 numpad.addEventListener('click', (event) => {
     if (event.target.classList.contains('numpad-button')) {
         currentState.cellChange(event.target.dataset.value);
     }
 });
 
-const eraseButton = document.querySelector('#erase-button');
+const eraseButton = controlsPanel.querySelector('#erase-button');
 eraseButton.addEventListener('click', () => {
     currentState.cellChange();
 });
 
-const notesButton = document.querySelector('#notes-button');
-notesButton.addEventListener('click', () => {
-    currentState.toggleNotesMode();
+const notesButton = controlsPanel.querySelector('#notes-button');
+notesButton.addEventListener('click', (event) => {
+    currentState.toggleNotesMode(event.target);
 });
 
 

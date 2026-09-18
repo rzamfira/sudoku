@@ -1,6 +1,6 @@
-import { addConflict, eliminateConflict, getNeighborsOfCell, calculateSquareIndex } from "./puzzle.js";
+import { addConflict, eliminateConflict, getNeighborsOfCell, calculateSquareIndex, modifyNotesMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
-import { toggleNotesButtonState } from "./ui/grid.js";
+import { toggleNotesButtonState } from "./ui/controlsPanel.js";
 
 export class SudokuState {
 
@@ -11,32 +11,48 @@ export class SudokuState {
     #notesMode
     #notesMatrix
 
-
     constructor(initialPuzzle) {
 
         this.#initialPuzzle = copyPuzzle(initialPuzzle);
         this.#userPuzzle = copyPuzzle(initialPuzzle);
         this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
         this.#conflictMatrix = createEmptyMatrix();
-        // this.#notesMode = false;
-        // this.#notesMatrix = createEmptyNotesMatrix();
+        this.#notesMode = false;
+        this.#notesMatrix = createEmptyMatrix();
 
-    }
-
-    getUserPuzzle() {
-        return this.#userPuzzle;
     }
 
     getSelectedCell() {
         return this.#selectedCell;
     }
 
-    getConflictMatrix() {
-        return this.#conflictMatrix;
+    getPuzzleValueFromState(rowIndex, columnIndex) {
+        return this.#userPuzzle[rowIndex][columnIndex];
     }
 
-    getNotesMatrix() {
-        return this.#notesMatrix;
+    getPuzzleValue(cell) {
+        return this.#userPuzzle[cell.rowIndex][cell.columnIndex];
+    }
+
+    #setPuzzleValue(cell, value) {
+        this.#userPuzzle[cell.rowIndex][cell.columnIndex] = value;
+    }
+
+    getNotesMatrix(cell) {
+        return this.#notesMatrix[cell.rowIndex][cell.columnIndex];
+    }
+
+    #setNotesMatrix(cell, notesMatrix) {
+        this.#notesMatrix[cell.rowIndex][cell.columnIndex] = notesMatrix;
+        console.log(this.#notesMatrix[cell.rowIndex][cell.columnIndex]);
+    }
+
+    getCellConflicts(cell) {
+        return this.#conflictMatrix[cell.rowIndex][cell.columnIndex];
+    }
+
+    #setCellConflicts(cell, conflictMatrix) {
+        this.#conflictMatrix[cell.rowIndex][cell.columnIndex] = conflictMatrix;
     }
 
     setSelectedCell(target) {
@@ -69,9 +85,11 @@ export class SudokuState {
 
     }
 
-    toggleNotesMode() {
+    toggleNotesMode(notesButton) {
+
         this.#notesMode = !this.#notesMode;
-        toggleNotesButtonState();
+        toggleNotesButtonState(notesButton);
+
     }
 
     cellChange(value) {
@@ -80,7 +98,11 @@ export class SudokuState {
             return;
 
         const modifyValue = value ?? '.';
-        this.#applyCellChange(modifyValue);
+        if (this.#notesMode)
+            this.#applyNotesChange(modifyValue);
+        else
+            this.#applyCellChange(modifyValue);
+
 
         renderGrid(this);
 
@@ -88,31 +110,57 @@ export class SudokuState {
 
     #applyCellChange(newValue) {
 
-        const selectedRowIndex = this.#selectedCell.rowIndex;
-        const selectedColumnIndex = this.#selectedCell.columnIndex;
+        const selectedCell = this.#selectedCell;
+
+        if (this.getNotesMatrix(selectedCell).length > 0) {
+            this.#setNotesMatrix(selectedCell, []);
+        }
 
         this.#updateConflictMatrix(newValue);
-        this.#userPuzzle[selectedRowIndex][selectedColumnIndex] = newValue;
+        this.#setPuzzleValue(selectedCell, newValue);
 
     }
 
-    #updateConflictMatrix(newValue) { // should I do this somewehere else, and get the data with getters?
+    #applyNotesChange(value) {
 
         const selectedCell = this.#selectedCell;
-        const neighborCells = getNeighborsOfCell(selectedCell);
+        if (this.getPuzzleValue(selectedCell) !== '.') {
+            this.#setPuzzleValue(selectedCell, '.');
+        }
 
+        const notesMatrix = modifyNotesMatrix(this.getNotesMatrix(selectedCell), value)
+        this.#setNotesMatrix(selectedCell, notesMatrix);
+
+
+    }
+
+    #updateConflictMatrix(newValue) {
+
+        const selectedCell = this.#selectedCell;
+        let selectedConflictMatrix = this.getCellConflicts(selectedCell);
+
+        const neighborCells = getNeighborsOfCell(selectedCell);
         neighborCells.forEach(neighborCell => {
 
-            const neighborCellValue = this.#userPuzzle[neighborCell.rowIndex][neighborCell.columnIndex];
+            const neighborCellValue = this.getPuzzleValue(neighborCell);
+            let neighborConflictMatrix = this.getCellConflicts(neighborCell)
 
             if (neighborCellValue === '.')
                 return;
 
-            eliminateConflict(this.#conflictMatrix, selectedCell, neighborCell);
+            neighborConflictMatrix = eliminateConflict(selectedCell, neighborConflictMatrix);
+            selectedConflictMatrix = eliminateConflict(neighborCell, selectedConflictMatrix);
 
             if (neighborCellValue === newValue) {
-                addConflict(this.#conflictMatrix, selectedCell, neighborCell);
+
+                neighborConflictMatrix = addConflict(selectedCell, neighborConflictMatrix);
+                selectedConflictMatrix = addConflict(neighborCell, selectedConflictMatrix);
+
             }
+
+            this.#setCellConflicts(selectedCell, selectedConflictMatrix);
+            this.#setCellConflicts(neighborCell, neighborConflictMatrix);
+
         });
 
     }
@@ -131,12 +179,7 @@ export class SudokuState {
 
     }
 
-    areNotesEmpty(rowIndex, columnIndex) {
-        const areNotesEmpty = this.#notesMatrix[rowIndex][columnIndex].every(value => value === 0);
-        return areNotesEmpty;
-    }
-
-    hasConflict(rowIndex, columnIndex) {
+    hasCellConflicts(rowIndex, columnIndex) {
 
         const hasConflict = this.#conflictMatrix[rowIndex][columnIndex].length > 0;
         return hasConflict;

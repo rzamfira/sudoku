@@ -1,3 +1,4 @@
+import { calculateSquareIndex } from "../puzzle.js";
 import { highlightConflicts, highlightSelectedCell, removeHighlight } from "./highlight.js";
 
 // function to create the sudoku grid
@@ -53,12 +54,26 @@ function createGridCells(sudokuSquares) {
             cell.dataset.rowIndex = rowIndex;
             cell.dataset.columnIndex = columnIndex;
 
-            // calculate the square index based on the cell's position
-            const squareRow = Math.floor(rowIndex / 3);
-            const squareColumn = Math.floor(columnIndex / 3);
-            const squareIndex = squareRow * 3 + squareColumn;
+            const squareIndex = calculateSquareIndex(rowIndex, columnIndex);
             cell.dataset.squareIndex = squareIndex;
 
+            const cellValue = document.createElement('span');
+            cellValue.classList.add('cell-value');
+
+            const notesGrid = document.createElement('span');
+            notesGrid.classList.add('notes-grid');
+
+            for (let value = 1; value <= 9; value++) {
+
+                const note = document.createElement('span');
+                note.classList.add('notes-value');
+                note.dataset.value = value;
+                notesGrid.appendChild(note);
+
+            }
+
+            cell.appendChild(cellValue);
+            cell.appendChild(notesGrid);
             sudokuSquares[squareIndex].appendChild(cell);
 
         }
@@ -71,6 +86,7 @@ function updateCellDisplay(currentCell, currentState) {
     removeHighlight(currentCell);
 
     const currentValue = currentState.getPuzzleValueFromState(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
+    const currentCellNotes = currentState.getCellNotesFromState(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
 
     const selectedCell = currentState.getSelectedCell();
     const selectedValue = currentState.getPuzzleValueFromState(selectedCell.rowIndex, selectedCell.columnIndex);
@@ -78,14 +94,32 @@ function updateCellDisplay(currentCell, currentState) {
     const isCellEditable = currentState.isCellEditable(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
     const hasCellConflicts = currentState.hasCellConflicts(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
 
+    const valueElement = currentCell.querySelector('.cell-value');
     if (currentState.isCellEmpty(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex))
-        currentCell.textContent = '';
+        valueElement.textContent = '';
     else
-        currentCell.textContent = currentValue;
+        valueElement.textContent = currentValue;
 
+    renderNotes(currentCell, currentCellNotes);
     highlightSelectedCell(currentCell, selectedCell, selectedValue);
     highlightConflicts(currentCell, isCellEditable, hasCellConflicts);
 
+}
+
+function renderNotes(currentCell, currentCellNotes) {
+
+    const notes = currentCell.querySelectorAll('.notes-value');
+
+    notes.forEach((note) => {
+
+        const value = Number(note.dataset.value);
+
+        if (currentCellNotes.includes(value))
+            note.textContent = value;
+        else
+            note.textContent = '';
+
+    });
 }
 
 

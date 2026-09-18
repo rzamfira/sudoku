@@ -21,7 +21,7 @@
     --color-highlight-same-value: #C3D7EA;
     --color-highlight-invalid-cell: #F7CFD6;
     --color-controls-primary: #EAEEF4;
-    --color-timer: #6e7c8c;
+    --color-grey: #6e7c8c;
     --color-blue: #325AAF;
     --color-red: #E55C6C;
     --color-button-hover: #dce3ed;
@@ -80,6 +80,35 @@ html {
     align-items: center;
     justify-content: center;
     aspect-ratio: auto;
+    position: relative;
+}
+
+.cell-value {
+    pointer-events: none;
+}
+
+.notes-grid {
+    position: absolute;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+}
+
+.notes-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--color-grey);
+    font-family: Hauss, sans-serif;
+    font-size: 40%;
+    font-weight: 400;
 }
 
 .highlight-neighbors {
@@ -173,7 +202,7 @@ html {
     justify-content: flex-end;
     align-items: center;
     gap: 6px;
-    color: var(--color-timer);
+    color: var(--color-grey);
     font-family: Hauss, sans-serif;
     font-size: 13px;
     font-stretch: normal;
@@ -260,7 +289,7 @@ html {
     background-color: var(--color-button-hover);
 }
 
-#notes-button{
+#notes-button {
     position: relative;
 }
 

@@ -59,14 +59,14 @@ export function modifyNotesMatrix(notesMatrix, value) {
     if (value === '.')
         return [];
 
-    const index = notesMatrix.indexOf(value);
+    const noteValue = Number(value);
+    const index = notesMatrix.indexOf(noteValue);
 
     if (index !== -1)
         notesMatrix.splice(index, 1);
 
     else {
-        notesMatrix.push(value);
-        notesMatrix.sort();
+        notesMatrix.push(noteValue);
     }
 
     return notesMatrix;

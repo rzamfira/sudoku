@@ -30,6 +30,10 @@ export class SudokuState {
         return this.#userPuzzle[rowIndex][columnIndex];
     }
 
+    getCellNotesFromState(rowIndex, columnIndex) {
+        return this.#notesMatrix[rowIndex][columnIndex];
+    }
+
     getPuzzleValue(cell) {
         return this.#userPuzzle[cell.rowIndex][cell.columnIndex];
     }
@@ -125,12 +129,12 @@ export class SudokuState {
 
         const selectedCell = this.#selectedCell;
         if (this.getPuzzleValue(selectedCell) !== '.') {
+            this.#updateConflictMatrix('.');
             this.#setPuzzleValue(selectedCell, '.');
         }
 
         const notesMatrix = modifyNotesMatrix(this.getNotesMatrix(selectedCell), value)
         this.#setNotesMatrix(selectedCell, notesMatrix);
-
 
     }
 

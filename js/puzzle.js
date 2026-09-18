@@ -1,78 +1,65 @@
-import { getSelectedCellNeighbors } from "./ui/grid.js";
+export function calculateSquareIndex(rowIndex, columnIndex) {
 
-export function updateConflictMatrix(conflictMatrix, selectedCell, newSelectedValue, previousSelectedValue) {
+    const squareRow = Math.floor(rowIndex / 3);
+    const squareColumn = Math.floor(columnIndex / 3);
+    return (squareRow * 3 + squareColumn);
 
-    const relatedCells = getSelectedCellNeighbors();
+}
 
-    relatedCells.forEach(cell => {
+export function getNeighborsOfCell(currentCell) {
 
-        const relatedCellValue = cell.textContent;
-        const rowIndex = cell.dataset.rowIndex;
-        const columnIndex = cell.dataset.columnIndex;
+    const neighbors = [];
 
-        if (relatedCellValue === '')
-            return;
+    for (let rowIndex = 0; rowIndex < 9; rowIndex++) {
+        for (let columnIndex = 0; columnIndex < 9; columnIndex++) {
 
-        if (relatedCellValue === previousSelectedValue) {
-            eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex);
+            if (rowIndex === currentCell.rowIndex && columnIndex === currentCell.columnIndex)
+                continue;
+
+            const squareIndex = calculateSquareIndex(rowIndex, columnIndex);
+
+            if (rowIndex === currentCell.rowIndex ||
+                columnIndex === currentCell.columnIndex ||
+                squareIndex === currentCell.squareIndex) {
+
+                neighbors.push({ rowIndex, columnIndex });
+
+            }
         }
+    }
 
-        if (relatedCellValue === newSelectedValue) {
-            addConflict(conflictMatrix, selectedCell, rowIndex, columnIndex);
-        }
-
-    });
-
-    return conflictMatrix;
+    return neighbors;
 
 }
 
-export function updateNotesMatrix(cellNotesMatrix, selectedCell, newValue, previousNotes) {
+export function eliminateConflict(conflictMatrix, selectedCell, neighborCell) {
 
-    if (newValue === '.') {
-        cellNotesMatrix[selectedCell.rowIndex][selectedCell.columnIndex].fill(0);
-        return cellNotesMatrix;
-    }
+    conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex] =
+        conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].filter(cell =>
+            cell.rowIndex != neighborCell.rowIndex ||
+            cell.columnIndex != neighborCell.columnIndex
+        );
 
-    if (previousNotes[newValue] === 0) {
-        cellNotesMatrix[selectedCell.rowIndex][selectedCell.columnIndex][newValue] = 1;
-    }
-    else { cellNotesMatrix[selectedCell.rowIndex][selectedCell.columnIndex][newValue] = 0; }
-    
-    return cellNotesMatrix;
-}
-
-function eliminateConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
-
-    if (rowIndex !== selectedCell.rowIndex || columnIndex !== selectedCell.columnIndex) {
-
-        conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex] =
-            conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].filter(cell =>
-                cell.rowIndex != rowIndex ||
-                cell.columnIndex != columnIndex
-            );
-
-        conflictMatrix[rowIndex][columnIndex] =
-            conflictMatrix[rowIndex][columnIndex].filter(cell =>
-                cell.rowIndex != selectedCell.rowIndex ||
-                cell.columnIndex != selectedCell.columnIndex
-            );
-
-    }
+    conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex] =
+        conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex].filter(cell =>
+            cell.rowIndex != selectedCell.rowIndex ||
+            cell.columnIndex != selectedCell.columnIndex
+        );
 
 }
 
-function addConflict(conflictMatrix, selectedCell, rowIndex, columnIndex) {
+export function addConflict(conflictMatrix, selectedCell, neighborCell) {
 
-    if (rowIndex !== selectedCell.rowIndex || columnIndex !== selectedCell.columnIndex) {
+    if (neighborCell.rowIndex !== selectedCell.rowIndex || neighborCell.columnIndex !== selectedCell.columnIndex) {
         conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex].push({
-            rowIndex: rowIndex,
-            columnIndex: columnIndex
+            rowIndex: neighborCell.rowIndex,
+            columnIndex: neighborCell.columnIndex
         });
-        conflictMatrix[rowIndex][columnIndex].push({
+        conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex].push({
             rowIndex: selectedCell.rowIndex,
             columnIndex: selectedCell.columnIndex
         });
     }
 
 }
+

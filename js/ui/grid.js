@@ -99,12 +99,5 @@ function updateCellDisplay(currentCell, currentState) {
 
 }
 
-export function getSelectedCellNeighbors() {
-
-    const cells = document.querySelectorAll(`.highlight-neighbors`)
-    return cells;
-
-}
-
 
 

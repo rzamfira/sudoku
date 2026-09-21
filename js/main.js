@@ -47,6 +47,11 @@ numpad.addEventListener('click', (event) => {
     }
 });
 
+const undoButton = controlsPanel.querySelector('#undo-button');
+undoButton.addEventListener('click', () => {
+    currentState.undoChange();
+})
+
 const eraseButton = controlsPanel.querySelector('#erase-button');
 eraseButton.addEventListener('click', () => {
     currentState.cellChange();

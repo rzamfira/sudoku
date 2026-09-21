@@ -10,6 +10,7 @@ export class SudokuState {
     #conflictMatrix
     #notesMode
     #notesMatrix
+    #history
 
     constructor(initialPuzzle) {
 
@@ -19,11 +20,16 @@ export class SudokuState {
         this.#conflictMatrix = createEmptyMatrix();
         this.#notesMode = false;
         this.#notesMatrix = createEmptyMatrix();
+        this.#history = [];
 
     }
 
     getSelectedCell() {
         return this.#selectedCell;
+    }
+
+    #selectCell(cell) {
+        this.#selectedCell = { ...cell };
     }
 
     getPuzzleValueFromState(rowIndex, columnIndex) {
@@ -48,7 +54,6 @@ export class SudokuState {
 
     #setNotesMatrix(cell, notesMatrix) {
         this.#notesMatrix[cell.rowIndex][cell.columnIndex] = notesMatrix;
-        console.log(this.#notesMatrix[cell.rowIndex][cell.columnIndex]);
     }
 
     getCellConflicts(cell) {
@@ -57,6 +62,17 @@ export class SudokuState {
 
     #setCellConflicts(cell, conflictMatrix) {
         this.#conflictMatrix[cell.rowIndex][cell.columnIndex] = conflictMatrix;
+    }
+
+    addHistoryState(cell) {
+
+        const state = {
+            selectedCell: { ...cell },
+            puzzleValue: this.getPuzzleValue(cell),
+            notesMatrix: [...this.getNotesMatrix(cell)]
+        };
+        this.#history.push(state);
+
     }
 
     setSelectedCell(target) {
@@ -98,15 +114,38 @@ export class SudokuState {
 
     cellChange(value) {
 
-        if (!this.isCellEditable(this.#selectedCell.rowIndex, this.#selectedCell.columnIndex))
+        const selectedCell = this.#selectedCell;
+        if (!this.isCellEditable(selectedCell.rowIndex, selectedCell.columnIndex))
             return;
 
         const modifyValue = value ?? '.';
-        if (this.#notesMode)
-            this.#applyNotesChange(modifyValue);
-        else
-            this.#applyCellChange(modifyValue);
 
+        this.addHistoryState(selectedCell);
+
+        if (this.#notesMode) {
+            this.#applyNotesChange(modifyValue);
+        }
+        else {
+            this.#applyCellChange(modifyValue);
+        }
+
+        renderGrid(this);
+
+    }
+
+    undoChange() {
+
+        const lastState = this.#history.pop();
+        if (lastState === undefined)
+            return;
+
+        const lastSelectedCell = lastState.selectedCell;
+        this.#selectCell(lastSelectedCell);
+
+        this.#setPuzzleValue(lastSelectedCell, lastState.puzzleValue);
+        this.#updateConflictMatrix(lastState.puzzleValue);
+
+        this.#setNotesMatrix(lastSelectedCell, lastState.notesMatrix);
 
         renderGrid(this);
 
@@ -120,8 +159,8 @@ export class SudokuState {
             this.#setNotesMatrix(selectedCell, []);
         }
 
-        this.#updateConflictMatrix(newValue);
         this.#setPuzzleValue(selectedCell, newValue);
+        this.#updateConflictMatrix(newValue);
 
     }
 
@@ -129,8 +168,8 @@ export class SudokuState {
 
         const selectedCell = this.#selectedCell;
         if (this.getPuzzleValue(selectedCell) !== '.') {
-            this.#updateConflictMatrix('.');
             this.#setPuzzleValue(selectedCell, '.');
+            this.#updateConflictMatrix('.');
         }
 
         const notesMatrix = modifyNotesMatrix(this.getNotesMatrix(selectedCell), value)

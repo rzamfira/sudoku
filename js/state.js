@@ -1,4 +1,4 @@
-import { addConflict, eliminateConflict, getNeighborsOfCell, calculateSquareIndex, modifyNotesMatrix } from "./puzzle.js";
+import { modifyNotesMatrix, moveSelectedCell, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { toggleNotesButtonState } from "./ui/controlsPanel.js";
 
@@ -24,91 +24,93 @@ export class SudokuState {
 
     }
 
-    getSelectedCell() {
-        return this.#selectedCell;
+    get selectedCell() {
+        return { ...this.#selectedCell };
     }
 
-    #selectCell(cell) {
-        this.#selectedCell = { ...cell };
-    }
+    set selectedCell(cell) {
 
-    getPuzzleValueFromState(rowIndex, columnIndex) {
-        return this.#userPuzzle[rowIndex][columnIndex];
-    }
-
-    getCellNotesFromState(rowIndex, columnIndex) {
-        return this.#notesMatrix[rowIndex][columnIndex];
-    }
-
-    getPuzzleValue(cell) {
-        return this.#userPuzzle[cell.rowIndex][cell.columnIndex];
-    }
-
-    #setPuzzleValue(cell, value) {
-        this.#userPuzzle[cell.rowIndex][cell.columnIndex] = value;
-    }
-
-    getNotesMatrix(cell) {
-        return this.#notesMatrix[cell.rowIndex][cell.columnIndex];
-    }
-
-    #setNotesMatrix(cell, notesMatrix) {
-        this.#notesMatrix[cell.rowIndex][cell.columnIndex] = notesMatrix;
-    }
-
-    getCellConflicts(cell) {
-        return this.#conflictMatrix[cell.rowIndex][cell.columnIndex];
-    }
-
-    #setCellConflicts(cell, conflictMatrix) {
-        this.#conflictMatrix[cell.rowIndex][cell.columnIndex] = conflictMatrix;
-    }
-
-    addHistoryState(cell) {
-
-        const state = {
-            selectedCell: { ...cell },
-            puzzleValue: this.getPuzzleValue(cell),
-            notesMatrix: [...this.getNotesMatrix(cell)]
-        };
-        this.#history.push(state);
-
-    }
-
-    setSelectedCell(target) {
-
-        let rowIndex = this.#selectedCell.rowIndex;
-        let columnIndex = this.#selectedCell.columnIndex;
-
-        switch (target) {
-
-            case 'ArrowUp': if (rowIndex > 0) rowIndex--; break;
-            case 'ArrowDown': if (rowIndex < 8) rowIndex++; break;
-            case 'ArrowLeft': if (columnIndex > 0) columnIndex--; break;
-            case 'ArrowRight': if (columnIndex < 8) columnIndex++; break;
-
-            default:
-                rowIndex = Number(target.dataset.rowIndex);
-                columnIndex = Number(target.dataset.columnIndex);
-
-        }
-
-        const squareIndex = calculateSquareIndex(rowIndex, columnIndex);
+        const rowIndex = cell.dataset ? cell.dataset.rowIndex : cell.rowIndex;
+        const columnIndex = cell.dataset ? cell.dataset.columnIndex : cell.columnIndex;
+        const squareIndex = cell.dataset ? cell.dataset.squareIndex : cell.squareIndex;
 
         this.#selectedCell = {
-            rowIndex: rowIndex,
-            columnIndex: columnIndex,
-            squareIndex: squareIndex
+            rowIndex: Number(rowIndex),
+            columnIndex: Number(columnIndex),
+            squareIndex: Number(squareIndex)
         };
 
         renderGrid(this);
 
     }
 
-    toggleNotesMode(notesButton) {
+    get selectedCellValue() {
+        return this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex];
+    }
 
+    set selectedCellValue(value) {
+        this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
+        updateConflictMatrix(this.#userPuzzle, this.selectedCell, this.#conflictMatrix);
+    }
+
+    get selectedCellNotes() {
+        return [...this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex]];
+    }
+
+    set selectedCellNotes(notes) {
+        this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = notes;
+    }
+
+    getCellValue(rowIndex, columnIndex) { // shoud I use get here to get all the values of the UserPuzzle and then use it?
+        return this.#userPuzzle[rowIndex][columnIndex];
+    }
+
+    getCellNotes(rowIndex, columnIndex) {
+        return this.#notesMatrix[rowIndex][columnIndex];
+    }
+
+    isCellEditable(rowIndex, columnIndex) {
+        const isInitialCellEmpty = this.#initialPuzzle[rowIndex][columnIndex] === '.';
+        return isInitialCellEmpty;
+    }
+
+    isCellEmpty(rowIndex, columnIndex) {
+        const isUserCellEmpty = this.#userPuzzle[rowIndex][columnIndex] === '.';
+        return isUserCellEmpty;
+    }
+
+    hasCellConflicts(rowIndex, columnIndex) {
+        const hasConflict = this.#conflictMatrix[rowIndex][columnIndex].length > 0;
+        return hasConflict;
+    }
+
+    toggleNotesMode(notesButton) { // should I make a getter for notesMode?
         this.#notesMode = !this.#notesMode;
         toggleNotesButtonState(notesButton);
+    }
+
+    updateSelectedCell(selectionInput) {
+
+        let selectedCell;
+
+        if (typeof selectionInput === 'string')
+            selectedCell = moveSelectedCell(this.#selectedCell, selectionInput);
+        else
+            selectedCell = selectionInput;
+
+        this.selectedCell = selectedCell;
+
+    }
+
+    #addHistoryState() {
+
+        const historyEntry = {
+            selectedCell: { ...this.selectedCell },
+            puzzleValue: this.selectedCellValue,
+            notesMatrix: [...this.selectedCellNotes]
+        };
+
+        this.#history.push(historyEntry);
 
     }
 
@@ -120,7 +122,7 @@ export class SudokuState {
 
         const modifyValue = value ?? '.';
 
-        this.addHistoryState(selectedCell);
+        this.#addHistoryState(selectedCell);
 
         if (this.#notesMode) {
             this.#applyNotesChange(modifyValue);
@@ -139,13 +141,9 @@ export class SudokuState {
         if (lastState === undefined)
             return;
 
-        const lastSelectedCell = lastState.selectedCell;
-        this.#selectCell(lastSelectedCell);
-
-        this.#setPuzzleValue(lastSelectedCell, lastState.puzzleValue);
-        this.#updateConflictMatrix(lastState.puzzleValue);
-
-        this.#setNotesMatrix(lastSelectedCell, lastState.notesMatrix);
+        this.selectedCell = lastState.selectedCell;
+        this.selectedCellValue = lastState.puzzleValue;
+        this.selectedCellNotes = lastState.notesMatrix;
 
         renderGrid(this);
 
@@ -153,82 +151,23 @@ export class SudokuState {
 
     #applyCellChange(newValue) {
 
-        const selectedCell = this.#selectedCell;
-
-        if (this.getNotesMatrix(selectedCell).length > 0) {
-            this.#setNotesMatrix(selectedCell, []);
+        if (this.selectedCellNotes.length > 0) {
+            this.selectedCellNotes = [];
         }
 
-        this.#setPuzzleValue(selectedCell, newValue);
-        this.#updateConflictMatrix(newValue);
+        this.selectedCellValue = newValue;
 
     }
 
     #applyNotesChange(value) {
 
-        const selectedCell = this.#selectedCell;
-        if (this.getPuzzleValue(selectedCell) !== '.') {
-            this.#setPuzzleValue(selectedCell, '.');
-            this.#updateConflictMatrix('.');
+        if (this.selectedCellValue !== '.') {
+            this.selectedCellValue = '.';
         }
 
-        const notesMatrix = modifyNotesMatrix(this.getNotesMatrix(selectedCell), value)
-        this.#setNotesMatrix(selectedCell, notesMatrix);
+        this.selectedCellNotes = modifyNotesMatrix(this.selectedCellNotes, value);
 
     }
-
-    #updateConflictMatrix(newValue) {
-
-        const selectedCell = this.#selectedCell;
-        let selectedConflictMatrix = this.getCellConflicts(selectedCell);
-
-        const neighborCells = getNeighborsOfCell(selectedCell);
-        neighborCells.forEach(neighborCell => {
-
-            const neighborCellValue = this.getPuzzleValue(neighborCell);
-            let neighborConflictMatrix = this.getCellConflicts(neighborCell)
-
-            if (neighborCellValue === '.')
-                return;
-
-            neighborConflictMatrix = eliminateConflict(selectedCell, neighborConflictMatrix);
-            selectedConflictMatrix = eliminateConflict(neighborCell, selectedConflictMatrix);
-
-            if (neighborCellValue === newValue) {
-
-                neighborConflictMatrix = addConflict(selectedCell, neighborConflictMatrix);
-                selectedConflictMatrix = addConflict(neighborCell, selectedConflictMatrix);
-
-            }
-
-            this.#setCellConflicts(selectedCell, selectedConflictMatrix);
-            this.#setCellConflicts(neighborCell, neighborConflictMatrix);
-
-        });
-
-    }
-
-    isCellEditable(rowIndex, columnIndex) {
-
-        const isInitialCellEmpty = this.#initialPuzzle[rowIndex][columnIndex] === '.';
-        return isInitialCellEmpty;
-
-    }
-
-    isCellEmpty(rowIndex, columnIndex) {
-
-        const isUserCellEmpty = this.#userPuzzle[rowIndex][columnIndex] === '.';
-        return isUserCellEmpty;
-
-    }
-
-    hasCellConflicts(rowIndex, columnIndex) {
-
-        const hasConflict = this.#conflictMatrix[rowIndex][columnIndex].length > 0;
-        return hasConflict;
-
-    }
-
 
 }
 

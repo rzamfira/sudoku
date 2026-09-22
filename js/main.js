@@ -22,14 +22,14 @@ document.addEventListener('keydown', (event) => {
 
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown' ||
         event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-        currentState.setSelectedCell(event.key);
+        currentState.updateSelectedCell(event.key);
     }
 
 });
 
 grid.addEventListener('click', (event) => {
     if (event.target.classList.contains('grid-item')) {
-        currentState.setSelectedCell(event.target);
+        currentState.updateSelectedCell(event.target);
     }
 });
 
@@ -48,14 +48,10 @@ numpad.addEventListener('click', (event) => {
 });
 
 const undoButton = controlsPanel.querySelector('#undo-button');
-undoButton.addEventListener('click', () => {
-    currentState.undoChange();
-})
+undoButton.addEventListener('click', () => { currentState.undoChange() });
 
 const eraseButton = controlsPanel.querySelector('#erase-button');
-eraseButton.addEventListener('click', () => {
-    currentState.cellChange();
-});
+eraseButton.addEventListener('click', () => { currentState.cellChange() });
 
 const notesButton = controlsPanel.querySelector('#notes-button');
 notesButton.addEventListener('click', (event) => {

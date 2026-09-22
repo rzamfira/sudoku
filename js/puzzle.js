@@ -6,7 +6,56 @@ export function calculateSquareIndex(rowIndex, columnIndex) {
 
 }
 
-export function getNeighborsOfCell(currentCell) {
+export function moveSelectedCell(selectedCell, direction) {
+
+    let rowIndex = selectedCell.rowIndex;
+    let columnIndex = selectedCell.columnIndex;
+
+    if (direction === 'ArrowUp' && rowIndex > 0)
+        rowIndex--;
+    else if (direction === 'ArrowDown' && rowIndex < 8)
+        rowIndex++;
+    else if (direction === 'ArrowLeft' && columnIndex > 0)
+        columnIndex--;
+    else if (direction === 'ArrowRight' && columnIndex < 8)
+        columnIndex++;
+
+    return {
+        rowIndex,
+        columnIndex,
+        squareIndex: calculateSquareIndex(rowIndex, columnIndex)
+    };
+
+}
+
+export function updateConflictMatrix(userPuzzle, selectedCell, conflictMatrix) {
+
+
+    const selectedValue = userPuzzle[selectedCell.rowIndex][selectedCell.columnIndex];
+    const selectedCellConflicts = conflictMatrix[selectedCell.rowIndex][selectedCell.columnIndex];
+
+    const neighborCells = getNeighborsOfCell(selectedCell);
+    neighborCells.forEach((neighborCell) => {
+
+        const neighborValue = userPuzzle[neighborCell.rowIndex][neighborCell.columnIndex];
+        const neighborCellConflicts = conflictMatrix[neighborCell.rowIndex][neighborCell.columnIndex];
+
+        eliminateConflict(selectedCell, neighborCellConflicts);
+        eliminateConflict(neighborCell, selectedCellConflicts);
+
+        if (neighborValue === '.')
+            return;
+
+        if (neighborValue === selectedValue) {
+            addConflict(neighborCell, selectedCellConflicts);
+            addConflict(selectedCell, neighborCellConflicts);
+        }
+
+    });
+
+}
+
+function getNeighborsOfCell(currentCell) {
 
     const neighbors = [];
 
@@ -32,25 +81,29 @@ export function getNeighborsOfCell(currentCell) {
 
 }
 
-export function eliminateConflict(conflictCell, conflictMatrix) {
+function eliminateConflict(conflictCell, conflictMatrix) {
 
-    conflictMatrix =
-        conflictMatrix.filter(cell =>
-            cell.rowIndex != conflictCell.rowIndex ||
-            cell.columnIndex != conflictCell.columnIndex
-        );
-
-    return conflictMatrix;
-}
-
-export function addConflict(conflictCell, conflictMatrix) {
-
-    conflictMatrix.push({
-        rowIndex: conflictCell.rowIndex,
-        columnIndex: conflictCell.columnIndex
+    const conflictIndex = conflictMatrix.findIndex((cell) => {
+        return (cell.rowIndex === conflictCell.rowIndex && cell.columnIndex === conflictCell.columnIndex);
     });
 
-    return conflictMatrix;
+    if (conflictIndex !== -1)
+        conflictMatrix.splice(conflictIndex, 1);
+
+}
+
+function addConflict(conflictCell, conflictMatrix) {
+
+    const conflictExists = conflictMatrix.some((cell) => {
+        return (cell.rowIndex === conflictCell.rowIndex && cell.columnIndex === conflictCell.columnIndex);
+    });
+
+    if (!conflictExists) {
+        conflictMatrix.push({
+            rowIndex: conflictCell.rowIndex,
+            columnIndex: conflictCell.columnIndex
+        });
+    }
 
 }
 

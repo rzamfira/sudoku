@@ -85,11 +85,11 @@ function updateCellDisplay(currentCell, currentState) {
 
     removeHighlight(currentCell);
 
-    const currentValue = currentState.getPuzzleValueFromState(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
-    const currentCellNotes = currentState.getCellNotesFromState(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
+    const selectedCell = currentState.selectedCell;
+    const selectedValue = currentState.selectedCellValue;
 
-    const selectedCell = currentState.getSelectedCell();
-    const selectedValue = currentState.getPuzzleValueFromState(selectedCell.rowIndex, selectedCell.columnIndex);
+    const currentValue = currentState.getCellValue(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);  // shoud I use get here to get all the values of the UserPuzzle
+    const currentCellNotes = currentState.getCellNotes(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex); // and same here?
 
     const isCellEditable = currentState.isCellEditable(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
     const hasCellConflicts = currentState.hasCellConflicts(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);

@@ -1,4 +1,4 @@
-import { modifyNotesMatrix, moveSelectedCell, updateConflictMatrix } from "./puzzle.js";
+import { modifyCellNotes, moveSelectedCell, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { toggleNotesButtonState } from "./ui/controlsPanel.js";
 
@@ -165,7 +165,7 @@ export class SudokuState {
             this.selectedCellValue = '.';
         }
 
-        this.selectedCellNotes = modifyNotesMatrix(this.selectedCellNotes, value);
+        this.selectedCellNotes = modifyCellNotes(this.selectedCellNotes, value);
 
     }
 

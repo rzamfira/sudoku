@@ -81,48 +81,43 @@ function getNeighborsOfCell(currentCell) {
 
 }
 
-function eliminateConflict(conflictCell, conflictMatrix) {
+function eliminateConflict(conflictCell, conflictArray) {
 
-    const conflictIndex = conflictMatrix.findIndex((cell) => {
+    const conflictIndex = conflictArray.findIndex((cell) => {
         return (cell.rowIndex === conflictCell.rowIndex && cell.columnIndex === conflictCell.columnIndex);
     });
 
     if (conflictIndex !== -1)
-        conflictMatrix.splice(conflictIndex, 1);
+        conflictArray.splice(conflictIndex, 1);
 
 }
 
-function addConflict(conflictCell, conflictMatrix) {
+function addConflict(conflictCell, conflictArray) {
 
-    const conflictExists = conflictMatrix.some((cell) => {
-        return (cell.rowIndex === conflictCell.rowIndex && cell.columnIndex === conflictCell.columnIndex);
+    conflictArray.push({
+        rowIndex: conflictCell.rowIndex,
+        columnIndex: conflictCell.columnIndex
     });
 
-    if (!conflictExists) {
-        conflictMatrix.push({
-            rowIndex: conflictCell.rowIndex,
-            columnIndex: conflictCell.columnIndex
-        });
-    }
 
 }
 
-export function modifyNotesMatrix(notesMatrix, value) {
+export function modifyCellNotes(notesArray, value) {
 
     if (value === '.')
         return [];
 
     const noteValue = Number(value);
-    const index = notesMatrix.indexOf(noteValue);
+    const index = notesArray.indexOf(noteValue);
 
     if (index !== -1)
-        notesMatrix.splice(index, 1);
+        notesArray.splice(index, 1);
 
     else {
-        notesMatrix.push(noteValue);
+        notesArray.push(noteValue);
     }
 
-    return notesMatrix;
+    return notesArray;
 
 }
 

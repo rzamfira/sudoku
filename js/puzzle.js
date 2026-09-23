@@ -6,10 +6,10 @@ export function calculateSquareIndex(rowIndex, columnIndex) {
 
 }
 
-export function moveSelectedCell(selectedCell, direction) {
+export function getNextCellCoordinates(cell, direction) {
 
-    let rowIndex = selectedCell.rowIndex;
-    let columnIndex = selectedCell.columnIndex;
+    let rowIndex = cell.rowIndex;
+    let columnIndex = cell.columnIndex;
 
     if (direction === 'ArrowUp' && rowIndex > 0)
         rowIndex--;
@@ -24,6 +24,16 @@ export function moveSelectedCell(selectedCell, direction) {
         rowIndex,
         columnIndex,
         squareIndex: calculateSquareIndex(rowIndex, columnIndex)
+    };
+
+}
+
+export function getCellCoordinates(DOMElement) {
+
+    return {
+        rowIndex: Number(DOMElement.dataset.rowIndex),
+        columnIndex: Number(DOMElement.dataset.columnIndex),
+        squareIndex: Number(DOMElement.dataset.squareIndex)
     };
 
 }

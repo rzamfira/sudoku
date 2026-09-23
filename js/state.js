@@ -1,4 +1,4 @@
-import { modifyCellNotes, moveSelectedCell, updateConflictMatrix } from "./puzzle.js";
+import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { toggleNotesButtonState } from "./ui/controlsPanel.js";
 
@@ -30,14 +30,10 @@ export class SudokuState {
 
     set selectedCell(cell) {
 
-        const rowIndex = cell.dataset ? cell.dataset.rowIndex : cell.rowIndex;
-        const columnIndex = cell.dataset ? cell.dataset.columnIndex : cell.columnIndex;
-        const squareIndex = cell.dataset ? cell.dataset.squareIndex : cell.squareIndex;
-
         this.#selectedCell = {
-            rowIndex: Number(rowIndex),
-            columnIndex: Number(columnIndex),
-            squareIndex: Number(squareIndex)
+            rowIndex: cell.rowIndex,
+            columnIndex: cell.columnIndex,
+            squareIndex: cell.squareIndex
         };
 
         renderGrid(this);
@@ -51,6 +47,7 @@ export class SudokuState {
     set selectedCellValue(value) {
         this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
         updateConflictMatrix(this.#userPuzzle, this.selectedCell, this.#conflictMatrix);
+        renderGrid(this);
     }
 
     get selectedCellNotes() {
@@ -59,9 +56,10 @@ export class SudokuState {
 
     set selectedCellNotes(notes) {
         this.#notesMatrix[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = notes;
+        renderGrid(this);
     }
 
-    getCellValue(rowIndex, columnIndex) { // shoud I use get here to get all the values of the UserPuzzle and then use it?
+    getCellValue(rowIndex, columnIndex) {
         return this.#userPuzzle[rowIndex][columnIndex];
     }
 
@@ -84,22 +82,9 @@ export class SudokuState {
         return hasConflict;
     }
 
-    toggleNotesMode(notesButton) { // should I make a getter for notesMode?
+    toggleNotesMode() {
         this.#notesMode = !this.#notesMode;
-        toggleNotesButtonState(notesButton);
-    }
-
-    updateSelectedCell(selectionInput) {
-
-        let selectedCell;
-
-        if (typeof selectionInput === 'string')
-            selectedCell = moveSelectedCell(this.#selectedCell, selectionInput);
-        else
-            selectedCell = selectionInput;
-
-        this.selectedCell = selectedCell;
-
+        toggleNotesButtonState();
     }
 
     #addHistoryState() {
@@ -114,7 +99,7 @@ export class SudokuState {
 
     }
 
-    cellChange(value) {
+    updateCell(value) {
 
         const selectedCell = this.#selectedCell;
         if (!this.isCellEditable(selectedCell.rowIndex, selectedCell.columnIndex))
@@ -125,13 +110,12 @@ export class SudokuState {
         this.#addHistoryState(selectedCell);
 
         if (this.#notesMode) {
-            this.#applyNotesChange(modifyValue);
+            this.#applyNotesUpdate(modifyValue);
         }
         else {
-            this.#applyCellChange(modifyValue);
+            this.#applyValueUpdate(modifyValue);
         }
 
-        renderGrid(this);
 
     }
 
@@ -145,11 +129,9 @@ export class SudokuState {
         this.selectedCellValue = lastState.puzzleValue;
         this.selectedCellNotes = lastState.notesMatrix;
 
-        renderGrid(this);
-
     }
 
-    #applyCellChange(newValue) {
+    #applyValueUpdate(newValue) {
 
         if (this.selectedCellNotes.length > 0) {
             this.selectedCellNotes = [];
@@ -159,7 +141,7 @@ export class SudokuState {
 
     }
 
-    #applyNotesChange(value) {
+    #applyNotesUpdate(value) {
 
         if (this.selectedCellValue !== '.') {
             this.selectedCellValue = '.';

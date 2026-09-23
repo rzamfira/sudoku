@@ -13,8 +13,9 @@ export function createControlPanel() {
 
 }
 
-export function toggleNotesButtonState(notesButton) {
+export function toggleNotesButtonState() {
 
+    const notesButton = document.getElementById(`notes-button`);
     notesButton.classList.toggle('notes-active');
 
 }

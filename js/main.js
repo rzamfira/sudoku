@@ -1,6 +1,7 @@
 import { createLayout } from './ui/appLayout.js';
 import { initializeGame } from './state.js';
 import { generateSudokuGame } from './sudokuGenerator.js';
+import { getCellCoordinates, moveCell } from './puzzle.js';
 
 
 createLayout();
@@ -13,23 +14,23 @@ const controlsPanel = document.querySelector('.controls-section');
 document.addEventListener('keydown', (event) => {
 
     if (event.key >= '1' && event.key <= '9') {
-        currentState.cellChange(event.key);
+        currentState.updateCell(event.key);
     }
 
     if (event.key === 'Backspace' || event.key === 'Delete') {
-        currentState.cellChange();
+        currentState.updateCell();
     }
 
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown' ||
         event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-        currentState.updateSelectedCell(event.key);
+        currentState.selectedCell = getNextCellCoordinates(currentState.selectedCell, event.key);
     }
 
 });
 
 grid.addEventListener('click', (event) => {
     if (event.target.classList.contains('grid-item')) {
-        currentState.updateSelectedCell(event.target);
+        currentState.selectedCell = getCellCoordinates(event.target);
     }
 });
 
@@ -43,7 +44,7 @@ newGameButton.addEventListener('click', () => {
 const numpad = controlsPanel.querySelector('.numpad-section');
 numpad.addEventListener('click', (event) => {
     if (event.target.classList.contains('numpad-button')) {
-        currentState.cellChange(event.target.dataset.value);
+        currentState.updateCell(event.target.dataset.value);
     }
 });
 
@@ -51,12 +52,10 @@ const undoButton = controlsPanel.querySelector('#undo-button');
 undoButton.addEventListener('click', () => { currentState.undoChange() });
 
 const eraseButton = controlsPanel.querySelector('#erase-button');
-eraseButton.addEventListener('click', () => { currentState.cellChange() });
+eraseButton.addEventListener('click', () => { currentState.updateCell() });
 
 const notesButton = controlsPanel.querySelector('#notes-button');
-notesButton.addEventListener('click', (event) => {
-    currentState.toggleNotesMode(event.target);
-});
+notesButton.addEventListener('click', () => { currentState.toggleNotesMode() });
 
 
 

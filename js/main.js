@@ -2,11 +2,13 @@ import { createLayout } from './ui/appLayout.js';
 import { initializeGame } from './state.js';
 import { generateSudokuGame } from './sudokuGenerator.js';
 import { getCellCoordinates, getNextCellCoordinates } from './puzzle.js';
+import { resetTimer, startTimer } from './ui/timer.js';
 
 
 createLayout();
 let puzzle = generateSudokuGame();
 let currentState = initializeGame(puzzle);
+startTimer();
 
 const grid = document.querySelector('.grid-section');
 const controlsPanel = document.querySelector('.controls-section');
@@ -38,6 +40,7 @@ const newGameButton = controlsPanel.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
     puzzle = generateSudokuGame();
     currentState = initializeGame(puzzle);
+    resetTimer();
 });
 
 

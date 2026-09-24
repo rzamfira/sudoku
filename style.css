@@ -214,10 +214,13 @@ html {
     margin: 0 0 1px;
 }
 
-
 .timer-class {
     display: flex;
     flex-direction: column;
+}
+
+.timer-display {
+    font-variant-numeric: tabular-nums;
 }
 
 .pause-button {

@@ -20,10 +20,11 @@ export function toggleNotesButtonState() {
 
 }
 
-export function togglePauseButtonState() {
+export function setPauseButtonState(isPaused) {
 
     const pauseButton = document.getElementById('pause-button');
-    pauseButton.classList.toggle('is-paused');
+    pauseButton.classList.toggle('is-paused', isPaused);
+    
 }
 
 

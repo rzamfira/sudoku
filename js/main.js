@@ -1,7 +1,7 @@
 import { createLayout } from './ui/appLayout.js';
 import { initializeGame } from './state.js';
 import { generateSudokuGame } from './sudokuGenerator.js';
-import { getCellCoordinates, moveCell } from './puzzle.js';
+import { getCellCoordinates, getNextCellCoordinates } from './puzzle.js';
 
 
 createLayout();
@@ -56,6 +56,9 @@ eraseButton.addEventListener('click', () => { currentState.updateCell() });
 
 const notesButton = controlsPanel.querySelector('#notes-button');
 notesButton.addEventListener('click', () => { currentState.toggleNotesMode() });
+
+const pauseButton = controlsPanel.querySelector('.pause-button');
+pauseButton.addEventListener('click', () => { currentState.togglePauseMode() });
 
 
 

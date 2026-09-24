@@ -25,6 +25,7 @@
     --color-blue: #325AAF;
     --color-red: #E55C6C;
     --color-button-hover: #dce3ed;
+    --color-pause-button: #94A3B7;
     --color-notes-background-text: #adb6c2;
     --color-new-game-button: #5A7BC0;
     --color-new-game-button-hover: #7091d5;
@@ -230,12 +231,15 @@ html {
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    outline: none;
+    position: relative;
+}
+
+.pause-button:hover {
+    background-color: var(--color-button-hover);
 }
 
 .pause-icon {
     position: relative;
-    display: block;
     width: 11px;
     height: 12px;
 }
@@ -247,7 +251,7 @@ html {
     top: 0;
     width: 2px;
     height: 100%;
-    background-color: #94a3b7;
+    background-color: var(--color-pause-button);
     border-radius: 3px;
 }
 
@@ -257,6 +261,23 @@ html {
 
 .pause-icon::after {
     right: 2px;
+}
+
+.play-icon {
+    display: none;
+    width: 12px;
+    height: 14px;
+    background-image: url("/icons/play.svg");
+    background-position: center;
+    background-size: contain;
+}
+
+.pause-button.is-paused .pause-icon {
+    display: none;
+}
+
+.pause-button.is-paused .play-icon {
+    display: block;
 }
 
 .game-action-section {

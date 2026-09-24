@@ -1,6 +1,6 @@
 import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
-import { toggleNotesButtonState } from "./ui/controlsPanel.js";
+import { toggleNotesButtonState, togglePauseButtonState } from "./ui/controlsPanel.js";
 
 export class SudokuState {
 
@@ -8,6 +8,7 @@ export class SudokuState {
     #userPuzzle
     #selectedCell
     #conflictMatrix
+    #pauseMode
     #notesMode
     #notesMatrix
     #history
@@ -18,6 +19,7 @@ export class SudokuState {
         this.#userPuzzle = copyPuzzle(initialPuzzle);
         this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
         this.#conflictMatrix = createEmptyMatrix();
+        this.#pauseMode = false;
         this.#notesMode = false;
         this.#notesMatrix = createEmptyMatrix();
         this.#history = [];
@@ -85,6 +87,11 @@ export class SudokuState {
     toggleNotesMode() {
         this.#notesMode = !this.#notesMode;
         toggleNotesButtonState();
+    }
+
+    togglePauseMode() {
+        this.#pauseMode = !this.#pauseMode;
+        togglePauseButtonState();
     }
 
     #addHistoryState() {

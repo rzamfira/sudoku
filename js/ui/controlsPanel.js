@@ -20,6 +20,13 @@ export function toggleNotesButtonState() {
 
 }
 
+export function togglePauseButtonState() {
+
+    const pauseButton = document.getElementById('pause-button');
+    pauseButton.classList.toggle('is-paused');
+}
+
+
 function createTimerSection() {
 
     const timerSection = document.createElement('section');
@@ -40,9 +47,14 @@ function createTimerSection() {
 
     const pauseButton = document.createElement('button');
     pauseButton.classList.add('pause-button');
+    pauseButton.id = 'pause-button';
+
     const pauseIcon = document.createElement('span');
     pauseIcon.classList.add('pause-icon');
-    pauseButton.appendChild(pauseIcon);
+    const playIcon = document.createElement('span');
+    playIcon.classList.add('play-icon');
+    
+    pauseButton.append(pauseIcon, playIcon);
 
     timerSection.appendChild(timerClass);
     timerSection.appendChild(pauseButton);

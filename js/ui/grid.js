@@ -10,6 +10,16 @@ export function createGrid() {
     const sudokuSquares = createSudokuSquares(grid);
     createGridCells(sudokuSquares);
 
+    const pauseOverlay = document.createElement('section');
+    pauseOverlay.classList.add('pause-overlay');
+    const icon = document.createElement('img');
+    icon.classList.add('icon-is-paused');
+    icon.src = `./icons/pause.svg`;
+    icon.alt = `pause`;
+    pauseOverlay.appendChild(icon);
+
+    grid.appendChild(pauseOverlay);
+
     return grid;
 
 }

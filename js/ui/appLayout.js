@@ -15,3 +15,10 @@ export function createLayout() {
     appContainer.append(gameLayout);
 
 }
+
+export function setPauseState(isPaused) {
+
+    const gameLayout = document.querySelector('.game-layout');
+    gameLayout.classList.toggle('is-paused', isPaused);
+
+}

@@ -54,6 +54,7 @@ html {
     box-sizing: border-box;
     align-self: flex-start;
     container-type: inline-size;
+    position: relative;
 }
 
 .grid-square {
@@ -275,14 +276,6 @@ html {
     background-size: contain;
 }
 
-.pause-button.is-paused .pause-icon {
-    display: none;
-}
-
-.pause-button.is-paused .play-icon {
-    display: block;
-}
-
 .game-action-section {
     display: flex;
     flex-direction: row;
@@ -420,4 +413,43 @@ html {
 
 .new-game-button:hover {
     background-color: var(--color-new-game-button-hover);
+}
+
+.pause-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    pointer-events: none;
+
+}
+
+.pause-overlay .icon-is-paused {
+    width: 60px;
+    height: auto;
+}
+
+.game-layout.is-paused .pause-overlay {
+    display: flex;
+}
+
+.game-layout.is-paused .pause-button .pause-icon {
+    display: none;
+}
+
+.game-layout.is-paused .pause-button .play-icon {
+    display: block;
+}
+
+.game-layout.is-paused .notes-value, .game-layout.is-paused .cell-value
+{
+    display: none;
+}
+
+.game-layout.is-paused .grid-item:is(.highlight-neighbors, .highlight-value, .highlight-invalid, .selected-cell) {
+    background-color: var(--color-white);
 }

@@ -1,7 +1,8 @@
 import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { toggleNotesButtonState } from "./ui/controlsPanel.js";
-import { pauseTimer, startTimer, setPauseButtonState, resetTimer } from "./ui/timer.js";
+import { pauseTimer, startTimer, resetTimer } from "./ui/timer.js";
+import { setPauseState } from "./ui/appLayout.js";
 
 export class SudokuState {
 
@@ -62,6 +63,10 @@ export class SudokuState {
         renderGrid(this);
     }
 
+    get playMode() {
+        return this.#playMode;
+    }
+
     getCellValue(rowIndex, columnIndex) {
         return this.#userPuzzle[rowIndex][columnIndex];
     }
@@ -101,7 +106,7 @@ export class SudokuState {
             pauseTimer();
         }
 
-        setPauseButtonState(!this.#playMode);
+        setPauseState(!this.#playMode);
 
     }
 
@@ -109,7 +114,7 @@ export class SudokuState {
 
         this.#playMode = true;
         resetTimer();
-        setPauseButtonState(!this.#playMode);
+        setPauseState(!this.#playMode);
 
     }
 
@@ -183,7 +188,7 @@ export function initializeGame(puzzle) {
 
     const gameState = new SudokuState(puzzle);
     renderGrid(gameState);
-    setPauseButtonState(false);
+    setPauseState(false);
     return gameState;
 
 }

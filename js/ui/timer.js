@@ -37,14 +37,6 @@ export function createTimerSection() {
 
 }
 
-
-export function setPauseButtonState(isPaused) {
-
-    const pauseButton = document.getElementById('pause-button');
-    pauseButton.classList.toggle('is-paused', isPaused);
-
-}
-
 export function startTimer() {
 
     timerId = setInterval(updateTimer, 1000);

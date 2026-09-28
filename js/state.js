@@ -1,8 +1,8 @@
 import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
-import { toggleNotesButtonState } from "./ui/controlsPanel.js";
+import { updateNotesButtonUI } from "./ui/controlsPanel.js";
 import { pauseTimer, startTimer, resetTimer } from "./ui/timer.js";
-import { setPauseState } from "./ui/appLayout.js";
+import { updateGamePauseUI } from "./ui/appLayout.js";
 
 export class SudokuState {
 
@@ -10,8 +10,8 @@ export class SudokuState {
     #userPuzzle
     #selectedCell
     #conflictMatrix
-    #playMode
-    #notesMode
+    #isPaused
+    #isNotesEnabled
     #notesMatrix
     #history
 
@@ -21,8 +21,8 @@ export class SudokuState {
         this.#userPuzzle = copyPuzzle(initialPuzzle);
         this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
         this.#conflictMatrix = createEmptyMatrix();
-        this.#playMode = true;
-        this.#notesMode = false;
+        this.#isPaused = false;
+        this.#isNotesEnabled = false;
         this.#notesMatrix = createEmptyMatrix();
         this.#history = [];
 
@@ -63,8 +63,8 @@ export class SudokuState {
         renderGrid(this);
     }
 
-    get playMode() {
-        return this.#playMode;
+    get isPaused() {
+        return this.#isPaused;
     }
 
     getCellValue(rowIndex, columnIndex) {
@@ -90,31 +90,31 @@ export class SudokuState {
         return hasConflict;
     }
 
-    toggleNotesMode() {
-        this.#notesMode = !this.#notesMode;
-        toggleNotesButtonState();
+    toggleNotesEnabled() {
+        this.#isNotesEnabled = !this.#isNotesEnabled;
+        updateNotesButtonUI();
     }
 
-    togglePlayMode() {
+    togglePause() {
 
-        this.#playMode = !this.#playMode;
+        this.#isPaused = !this.#isPaused;
 
-        if (this.#playMode) {
-            startTimer();
-        }
-        else {
+        if (this.#isPaused) {
             pauseTimer();
         }
+        else {
+            startTimer();
+        }
 
-        setPauseState(!this.#playMode);
+        updateGamePauseUI(this.#isPaused);
 
     }
 
     startGameTimer() {
 
-        this.#playMode = true;
+        this.#isPaused = false;
         resetTimer();
-        setPauseState(!this.#playMode);
+        updateGamePauseUI(this.#isPaused);
 
     }
 
@@ -140,7 +140,7 @@ export class SudokuState {
 
         this.#addHistoryState(selectedCell);
 
-        if (this.#notesMode) {
+        if (this.#isNotesEnabled) {
             this.#applyNotesUpdate(modifyValue);
         }
         else {
@@ -188,7 +188,7 @@ export function initializeGame(puzzle) {
 
     const gameState = new SudokuState(puzzle);
     renderGrid(gameState);
-    setPauseState(false);
+    updateGamePauseUI(gameState.isPaused);
     return gameState;
 
 }

@@ -16,7 +16,7 @@ export function createLayout() {
 
 }
 
-export function setPauseState(isPaused) {
+export function updateGamePauseUI(isPaused) {
 
     const gameLayout = document.querySelector('.game-layout');
     gameLayout.classList.toggle('is-paused', isPaused);

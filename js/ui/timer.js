@@ -1,37 +1,14 @@
-let totalSeconds = 0;
+let elapsedSeconds = 0;
 let timerId = null;
+let timerElement = null;
 
 export function createTimerSection() {
 
     const timerSection = document.createElement('section');
     timerSection.classList.add('timer-section');
 
-    const timerClass = document.createElement('section');
-    timerClass.classList.add('timer-class');
-    const timerLabel = document.createElement('span');
-    timerLabel.classList.add('timer-label');
-    timerLabel.textContent = 'Time';
-    const time = document.createElement(`time`);
-    time.classList.add(`timer-display`);
-    time.setAttribute('id', 'timer');
-    time.setAttribute('datetime', 'PT0S');
-    time.textContent = '00:00';
-    timerClass.appendChild(timerLabel);
-    timerClass.appendChild(time);
-
-    const pauseButton = document.createElement('button');
-    pauseButton.classList.add('pause-button');
-    pauseButton.id = 'pause-button';
-
-    const pauseIcon = document.createElement('span');
-    pauseIcon.classList.add('pause-icon');
-    const playIcon = document.createElement('span');
-    playIcon.classList.add('play-icon');
-
-    pauseButton.append(pauseIcon, playIcon);
-
-    timerSection.appendChild(timerClass);
-    timerSection.appendChild(pauseButton);
+    timerSection.appendChild(createTimer());
+    timerSection.appendChild(createPauseButton());
 
     return timerSection;
 
@@ -39,7 +16,9 @@ export function createTimerSection() {
 
 export function startTimer() {
 
-    timerId = setInterval(updateTimer, 1000);
+    timerId = setInterval(() => {
+        updateTimerDisplay(elapsedSeconds + 1);
+    }, 1000);
 
 }
 
@@ -52,28 +31,61 @@ export function pauseTimer() {
 
 export function resetTimer() {
 
-    const timerElement = document.getElementById('timer');
-
     pauseTimer();
-
-    totalSeconds = 0;
-    timerElement.textContent = '00:00';
-
+    updateTimerDisplay(0);
     startTimer();
 
 }
 
-function updateTimer() {
+function updateTimerDisplay(seconds) {
 
-    const timerElement = document.getElementById('timer');
+    elapsedSeconds = seconds;
 
-    totalSeconds++;
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const remaingSeconds = elapsedSeconds % 60;
 
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    const formattedSeconds = remaingSeconds < 10 ? `0${remaingSeconds}` : remaingSeconds;
 
     timerElement.textContent = `${formattedMinutes}:${formattedSeconds}`;
+
+}
+
+function createTimer() {
+
+    const timerClass = document.createElement('section');
+    timerClass.classList.add('timer-class');
+
+    const timerLabel = document.createElement('span');
+    timerLabel.classList.add('timer-label');
+    timerLabel.textContent = 'Time';
+
+    timerElement = document.createElement(`time`);
+    timerElement.classList.add(`timer-display`);
+    timerElement.setAttribute('id', 'timer');
+    timerElement.setAttribute('datetime', 'PT0S');
+    timerElement.textContent = '00:00';
+
+    timerClass.appendChild(timerLabel);
+    timerClass.appendChild(timerElement);
+
+    return timerClass;
+
+}
+
+function createPauseButton() {
+
+    const pauseButton = document.createElement('button');
+    pauseButton.classList.add('pause-button');
+    pauseButton.id = 'pause-button';
+
+    const pauseIcon = document.createElement('span');
+    pauseIcon.classList.add('pause-icon');
+    const playIcon = document.createElement('span');
+    playIcon.classList.add('play-icon');
+
+    pauseButton.append(pauseIcon, playIcon);
+
+    return pauseButton;
 
 }

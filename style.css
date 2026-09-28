@@ -445,11 +445,28 @@ html {
     display: block;
 }
 
-.game-layout.is-paused .notes-value, .game-layout.is-paused .cell-value
-{
+.game-layout.is-paused .notes-value,
+.game-layout.is-paused .cell-value {
     display: none;
 }
 
 .game-layout.is-paused .grid-item:is(.highlight-neighbors, .highlight-value, .highlight-invalid, .selected-cell) {
     background-color: var(--color-white);
+}
+
+.won-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--color-blue);
+    text-align: center;
+}
+
+.won-overlay.is-visible {
+    display: flex;
 }

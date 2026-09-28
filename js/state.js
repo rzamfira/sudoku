@@ -14,6 +14,7 @@ export class SudokuState {
     #isNotesEnabled
     #notesMatrix
     #history
+    #isWon
 
     constructor(initialPuzzle) {
 
@@ -25,6 +26,7 @@ export class SudokuState {
         this.#isNotesEnabled = false;
         this.#notesMatrix = createEmptyMatrix();
         this.#history = [];
+        this.#isWon = false;
 
     }
 
@@ -51,6 +53,12 @@ export class SudokuState {
     set selectedCellValue(value) {
         this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
         updateConflictMatrix(this.#userPuzzle, this.selectedCell, this.#conflictMatrix);
+
+        if (this.#checkIsWon()) {
+            this.#isWon = true;
+            pauseTimer();
+        }
+
         renderGrid(this);
     }
 
@@ -65,6 +73,10 @@ export class SudokuState {
 
     get isPaused() {
         return this.#isPaused;
+    }
+
+    get isWon() {
+        return this.#isWon;
     }
 
     getCellValue(rowIndex, columnIndex) {
@@ -147,7 +159,6 @@ export class SudokuState {
             this.#applyValueUpdate(modifyValue);
         }
 
-
     }
 
     undoChange() {
@@ -179,6 +190,17 @@ export class SudokuState {
         }
 
         this.selectedCellNotes = modifyCellNotes(this.selectedCellNotes, value);
+
+    }
+
+    #checkIsWon() {
+
+        return this.#userPuzzle.every((row, rowIndex) =>
+            row.every((value, columnIndex) =>
+                value !== '.' &&
+                !this.hasCellConflicts(rowIndex, columnIndex)
+            )
+        );
 
     }
 

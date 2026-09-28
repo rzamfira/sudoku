@@ -18,7 +18,14 @@ export function createGrid() {
     icon.alt = `pause`;
     pauseOverlay.appendChild(icon);
 
+    const wonOverlay = document.createElement('section');
+    wonOverlay.classList.add('won-overlay');
+    const message = document.createElement('h2');
+    message.textContent = 'You won!';
+    wonOverlay.appendChild(message);
+
     grid.appendChild(pauseOverlay);
+    grid.appendChild(wonOverlay);
 
     return grid;
 
@@ -31,6 +38,11 @@ export function renderGrid(currentState) {
     cells.forEach(currentCell => {
         updateCellDisplay(currentCell, currentState);
     });
+
+    const wonOverlay = document.querySelector(`.won-overlay`);
+    if (wonOverlay) {
+        wonOverlay.classList.toggle('is-visible', currentState.isWon);
+    }
 
 }
 
@@ -130,6 +142,14 @@ function renderNotes(currentCell, currentCellNotes) {
             note.textContent = '';
 
     });
+}
+
+function createWonOverlay() {
+
+    const wonOverlay = document.createElement('section');
+    wonOverlay.classList.add('won-overlay');
+
+
 }
 
 

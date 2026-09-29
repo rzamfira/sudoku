@@ -40,9 +40,7 @@ export function renderGrid(currentState) {
     });
 
     const wonOverlay = document.querySelector(`.won-overlay`);
-    if (wonOverlay) {
-        wonOverlay.classList.toggle('is-visible', currentState.isWon);
-    }
+    wonOverlay.classList.toggle('is-visible', currentState.isWon);
 
 }
 

@@ -6,7 +6,6 @@ import { getCellCoordinates, getNextCellCoordinates } from './puzzle.js';
 createLayout();
 let puzzle = generateSudokuGame();
 let currentState = initializeGame(puzzle);
-currentState.startGameTimer();
 
 const grid = document.querySelector('.grid-section');
 const controlsPanel = document.querySelector('.controls-section');
@@ -24,16 +23,18 @@ document.addEventListener('keydown', (event) => {
     }
 
     if (currentState.isPaused) {
-        currentState.togglePause();
+        return currentState.togglePause();
     }
 
     if (isNumber) {
-        currentState.updateCell(event.key);
+        return currentState.updateCell(event.key);
     }
-    else if (isEraseKey) {
-        currentState.updateCell();
+
+    if (isEraseKey) {
+        return currentState.updateCell();
     }
-    else if (isArrowKey) {
+
+    if (isArrowKey) {
         currentState.selectedCell = getNextCellCoordinates(currentState.selectedCell, event.key);
     }
 
@@ -43,7 +44,6 @@ const newGameButton = controlsPanel.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
     puzzle = generateSudokuGame();
     currentState = initializeGame(puzzle);
-    currentState.startGameTimer();
 });
 
 const pauseButton = controlsPanel.querySelector('.pause-button');
@@ -56,10 +56,9 @@ grid.addEventListener('click', (event) => {
     }
 
     if (currentState.isPaused) {
-        currentState.togglePause();
-    } else {
-        currentState.selectedCell = getCellCoordinates(event.target);
+        return currentState.togglePause();
     }
+    currentState.selectedCell = getCellCoordinates(event.target);
 
 });
 
@@ -71,39 +70,38 @@ numpad.addEventListener('click', (event) => {
     }
 
     if (currentState.isPaused) {
-        currentState.togglePause();
-    } else {
-        currentState.updateCell(event.target.dataset.value);
+        return currentState.togglePause();
     }
-
+    currentState.updateCell(event.target.dataset.value);
 
 });
 
-const gameActionSection = controlsPanel.querySelector('.game-action-section');
-gameActionSection.addEventListener('click', (event) => {
-
-    if (!event.target.classList.contains('game-action-button')) {
-        return;
-    }
+const undoButton = controlsPanel.querySelector('#undo-button');
+undoButton.addEventListener('click', () => {
 
     if (currentState.isPaused) {
-        currentState.togglePause();
-    } else {
-
-        if (event.target.dataset.action === 'undo') {
-            currentState.undoChange();
-        } else if (event.target.dataset.action === 'erase') {
-            currentState.updateCell();
-        } else if (event.target.dataset.action === 'notes') {
-            currentState.toggleNotesEnabled();
-        }
-
+        return currentState.togglePause();
     }
+    currentState.undoChange();
 
-});
+})
 
+const eraseButton = controlsPanel.querySelector('#erase-button');
+eraseButton.addEventListener('click', () => {
 
+    if (currentState.isPaused) {
+        return currentState.togglePause();
+    }
+    currentState.updateCell();
 
+})
 
+const notesButton = controlsPanel.querySelector('#notes-button');
+notesButton.addEventListener('click', () => {
 
+    if (currentState.isPaused) {
+        return currentState.togglePause();
+    }
+    currentState.toggleNotesEnabled();
 
+})

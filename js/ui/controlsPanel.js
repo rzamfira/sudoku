@@ -15,10 +15,10 @@ export function createControlPanel() {
 
 }
 
-export function updateNotesButtonUI() {
+export function updateNotesButtonUI(isEnabled) {
 
     const notesButton = document.getElementById(`notes-button`);
-    notesButton.classList.toggle('notes-active');
+    notesButton.classList.toggle('notes-active', isEnabled);
 
 }
 

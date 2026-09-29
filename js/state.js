@@ -1,8 +1,10 @@
 import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { updateNotesButtonUI } from "./ui/controlsPanel.js";
-import { pauseTimer, startTimer, resetTimer } from "./ui/timer.js";
+import { updateTimerDisplay } from "./ui/timer.js";
 import { updateGamePauseUI } from "./ui/appLayout.js";
+
+let timerId = null;
 
 export class SudokuState {
 
@@ -10,10 +12,11 @@ export class SudokuState {
     #userPuzzle
     #selectedCell
     #conflictMatrix
-    #isPaused
     #isNotesEnabled
     #notesMatrix
     #history
+    #isPaused
+    #elapsedSeconds
     #isWon
 
     constructor(initialPuzzle) {
@@ -22,10 +25,11 @@ export class SudokuState {
         this.#userPuzzle = copyPuzzle(initialPuzzle);
         this.#selectedCell = { rowIndex: 0, columnIndex: 0, squareIndex: 0 };
         this.#conflictMatrix = createEmptyMatrix();
-        this.#isPaused = false;
         this.#isNotesEnabled = false;
         this.#notesMatrix = createEmptyMatrix();
         this.#history = [];
+        this.#isPaused = false;
+        this.#elapsedSeconds = 0;
         this.#isWon = false;
 
     }
@@ -56,7 +60,7 @@ export class SudokuState {
 
         if (this.#checkIsWon()) {
             this.#isWon = true;
-            pauseTimer();
+            this.#stopTimer();
         }
 
         renderGrid(this);
@@ -71,8 +75,41 @@ export class SudokuState {
         renderGrid(this);
     }
 
+    get isNotesEnabled() {
+        return this.#isNotesEnabled;
+    }
+
+    set isNotesEnabled(value) {
+        this.#isNotesEnabled = value;
+        updateNotesButtonUI(this.#isNotesEnabled);
+    }
+
     get isPaused() {
         return this.#isPaused;
+    }
+
+    set isPaused(value) {
+
+        this.#isPaused = value;
+
+        if (this.#isPaused) {
+            this.#stopTimer();
+        }
+        else {
+            this.#startTimer();
+        }
+
+        updateGamePauseUI(this.#isPaused);
+
+    }
+
+    get elapsedSeconds() {
+        return this.#elapsedSeconds;
+    }
+
+    set elapsedSeconds(value) {
+        this.#elapsedSeconds = value;
+        updateTimerDisplay(value);
     }
 
     get isWon() {
@@ -104,41 +141,17 @@ export class SudokuState {
 
     toggleNotesEnabled() {
         this.#isNotesEnabled = !this.#isNotesEnabled;
-        updateNotesButtonUI();
     }
 
     togglePause() {
-
-        this.#isPaused = !this.#isPaused;
-
-        if (this.#isPaused) {
-            pauseTimer();
-        }
-        else {
-            startTimer();
-        }
-
-        updateGamePauseUI(this.#isPaused);
-
+        this.isPaused = !this.#isPaused;
     }
 
     startGameTimer() {
 
-        this.#isPaused = false;
-        resetTimer();
-        updateGamePauseUI(this.#isPaused);
-
-    }
-
-    #addHistoryState() {
-
-        const historyEntry = {
-            selectedCell: { ...this.selectedCell },
-            puzzleValue: this.selectedCellValue,
-            notesMatrix: [...this.selectedCellNotes]
-        };
-
-        this.#history.push(historyEntry);
+        this.#stopTimer();
+        this.elapsedSeconds = 0;
+        this.isPaused = false;
 
     }
 
@@ -173,6 +186,18 @@ export class SudokuState {
 
     }
 
+    #addHistoryState() {
+
+        const historyEntry = {
+            selectedCell: { ...this.selectedCell },
+            puzzleValue: this.selectedCellValue,
+            notesMatrix: [...this.selectedCellNotes]
+        };
+
+        this.#history.push(historyEntry);
+
+    }
+
     #applyValueUpdate(newValue) {
 
         if (this.selectedCellNotes.length > 0) {
@@ -193,6 +218,19 @@ export class SudokuState {
 
     }
 
+    #startTimer() {
+
+        timerId = setInterval(() => {
+            this.elapsedSeconds = this.#elapsedSeconds + 1;
+        }, 1000);
+
+    }
+
+    #stopTimer() {
+        clearInterval(timerId);
+        timerId = null;
+    }
+
     #checkIsWon() {
 
         return this.#userPuzzle.every((row, rowIndex) =>
@@ -206,11 +244,12 @@ export class SudokuState {
 
 }
 
+
 export function initializeGame(puzzle) {
 
     const gameState = new SudokuState(puzzle);
     renderGrid(gameState);
-    updateGamePauseUI(gameState.isPaused);
+    gameState.startGameTimer();
     return gameState;
 
 }

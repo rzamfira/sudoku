@@ -1,5 +1,3 @@
-let elapsedSeconds = 0;
-let timerId = null;
 let timerElement = null;
 
 export function createTimerSection() {
@@ -14,35 +12,10 @@ export function createTimerSection() {
 
 }
 
-export function startTimer() {
+export function updateTimerDisplay(seconds) {
 
-    timerId = setInterval(() => {
-        updateTimerDisplay(elapsedSeconds + 1);
-    }, 1000);
-
-}
-
-export function pauseTimer() {
-
-    clearInterval(timerId);
-    timerId = null;
-
-}
-
-export function resetTimer() {
-
-    pauseTimer();
-    updateTimerDisplay(0);
-    startTimer();
-
-}
-
-function updateTimerDisplay(seconds) {
-
-    elapsedSeconds = seconds;
-
-    const minutes = Math.floor(elapsedSeconds / 60);
-    const remaingSeconds = elapsedSeconds % 60;
+    const minutes = Math.floor(seconds / 60);
+    const remaingSeconds = seconds % 60;
 
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedSeconds = remaingSeconds < 10 ? `0${remaingSeconds}` : remaingSeconds;

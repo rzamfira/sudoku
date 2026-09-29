@@ -5,7 +5,7 @@ import { createGrid } from "./grid.js";
 export function createLayout() {
 
     const appContainer = document.getElementById("app");
-    const gameLayout = document.createElement('main'); 
+    const gameLayout = document.createElement('main');
     gameLayout.classList.add('game-layout');
 
     const grid = createGrid();
@@ -20,5 +20,12 @@ export function updateGamePauseUI(isPaused) {
 
     const gameLayout = document.querySelector('.game-layout');
     gameLayout.classList.toggle('is-paused', isPaused);
+
+}
+
+export function updateGameWonUI(isWon) {
+
+    const gameLayout = document.querySelector('.game-layout');
+    gameLayout.classList.toggle('is-won', isWon);
 
 }

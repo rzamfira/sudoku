@@ -12,6 +12,10 @@ const controlsPanel = document.querySelector('.controls-section');
 
 document.addEventListener('keydown', (event) => {
 
+    if (currentState.isWon) {
+        return;
+    }
+
     const isNumber = event.key >= '1' && event.key <= '9';
     const isEraseKey = event.key === 'Backspace' || event.key === 'Delete';
 
@@ -42,14 +46,27 @@ document.addEventListener('keydown', (event) => {
 
 const newGameButton = controlsPanel.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
+
     puzzle = generateSudokuGame();
     currentState = initializeGame(puzzle);
+
 });
 
 const pauseButton = controlsPanel.querySelector('.pause-button');
-pauseButton.addEventListener('click', () => { currentState.togglePause(); });
+pauseButton.addEventListener('click', () => {
+
+    if (currentState.isWon) {
+        return;
+    }
+    currentState.togglePause();
+
+});
 
 grid.addEventListener('click', (event) => {
+
+    if (currentState.isWon) {
+        return;
+    }
 
     if (!event.target.classList.contains('grid-item')) {
         return;
@@ -65,6 +82,10 @@ grid.addEventListener('click', (event) => {
 const numpad = controlsPanel.querySelector('.numpad-section');
 numpad.addEventListener('click', (event) => {
 
+    if (currentState.isWon) {
+        return;
+    }
+
     if (!event.target.classList.contains('numpad-button')) {
         return;
     }
@@ -79,6 +100,10 @@ numpad.addEventListener('click', (event) => {
 const undoButton = controlsPanel.querySelector('#undo-button');
 undoButton.addEventListener('click', () => {
 
+    if (currentState.isWon) {
+        return;
+    }
+
     if (currentState.isPaused) {
         return currentState.togglePause();
     }
@@ -89,6 +114,10 @@ undoButton.addEventListener('click', () => {
 const eraseButton = controlsPanel.querySelector('#erase-button');
 eraseButton.addEventListener('click', () => {
 
+    if (currentState.isWon) {
+        return;
+    }
+
     if (currentState.isPaused) {
         return currentState.togglePause();
     }
@@ -98,6 +127,10 @@ eraseButton.addEventListener('click', () => {
 
 const notesButton = controlsPanel.querySelector('#notes-button');
 notesButton.addEventListener('click', () => {
+
+    if (currentState.isWon) {
+        return;
+    }
 
     if (currentState.isPaused) {
         return currentState.togglePause();

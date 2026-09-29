@@ -2,7 +2,7 @@ import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { updateNotesButtonUI } from "./ui/controlsPanel.js";
 import { updateTimerDisplay } from "./ui/timer.js";
-import { updateGamePauseUI } from "./ui/appLayout.js";
+import { updateGamePauseUI, updateGameWonUI } from "./ui/appLayout.js";
 
 let timerId = null;
 
@@ -59,8 +59,7 @@ export class SudokuState {
         updateConflictMatrix(this.#userPuzzle, this.selectedCell, this.#conflictMatrix);
 
         if (this.#checkIsWon()) {
-            this.#isWon = true;
-            this.#stopTimer();
+            this.isWon = true;
         }
 
         renderGrid(this);
@@ -108,12 +107,26 @@ export class SudokuState {
     }
 
     set elapsedSeconds(value) {
+
         this.#elapsedSeconds = value;
+        if (value === 0)
+            this.#stopTimer();
+
         updateTimerDisplay(value);
     }
 
     get isWon() {
         return this.#isWon;
+    }
+
+    set isWon(value) {
+
+        this.#isWon = value;
+        if (this.#isWon) {
+            this.#stopTimer();
+        }
+        updateGameWonUI(value);
+
     }
 
     getCellValue(rowIndex, columnIndex) {
@@ -140,7 +153,7 @@ export class SudokuState {
     }
 
     toggleNotesEnabled() {
-        this.#isNotesEnabled = !this.#isNotesEnabled;
+        this.isNotesEnabled = !this.#isNotesEnabled;
     }
 
     togglePause() {
@@ -149,9 +162,9 @@ export class SudokuState {
 
     startGameTimer() {
 
-        this.#stopTimer();
         this.elapsedSeconds = 0;
         this.isPaused = false;
+        this.isWon = false;
 
     }
 
@@ -165,7 +178,7 @@ export class SudokuState {
 
         this.#addHistoryState(selectedCell);
 
-        if (this.#isNotesEnabled) {
+        if (this.isNotesEnabled) {
             this.#applyNotesUpdate(modifyValue);
         }
         else {
@@ -227,8 +240,10 @@ export class SudokuState {
     }
 
     #stopTimer() {
+
         clearInterval(timerId);
         timerId = null;
+
     }
 
     #checkIsWon() {

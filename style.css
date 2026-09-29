@@ -30,6 +30,7 @@
     --color-new-game-button: #5A7BC0;
     --color-new-game-button-hover: #7091d5;
     --color-white: #fff;
+    --color-won-overlay: rgba(234, 238, 244, 0.85);
 }
 
 body,
@@ -463,10 +464,16 @@ html {
     align-items: center;
     justify-content: center;
 
-    background-color: var(--color-blue);
+    background-color: var(--color-won-overlay);
     text-align: center;
 }
 
-.won-overlay.is-visible {
+.game-layout.is-won .won-overlay {
     display: flex;
+}
+
+.game-layout.is-won .game-action-section,
+.game-layout.is-won .numpad-section,
+.game-layout.is-won .pause-button {
+    display: none;
 }

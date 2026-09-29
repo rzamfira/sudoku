@@ -1,10 +1,8 @@
-import { modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
+import { isGameWon, modifyCellNotes, updateConflictMatrix } from "./puzzle.js";
 import { renderGrid } from "./ui/grid.js";
 import { updateNotesButtonUI } from "./ui/controlsPanel.js";
 import { updateTimerDisplay } from "./ui/timer.js";
 import { updateGamePauseUI, updateGameWonUI } from "./ui/appLayout.js";
-
-let timerId = null;
 
 export class SudokuState {
 
@@ -16,6 +14,7 @@ export class SudokuState {
     #notesMatrix
     #history
     #isPaused
+    #timerId
     #elapsedSeconds
     #isWon
 
@@ -29,8 +28,23 @@ export class SudokuState {
         this.#notesMatrix = createEmptyMatrix();
         this.#history = [];
         this.#isPaused = false;
+        this.#timerId = null;
         this.#elapsedSeconds = 0;
         this.#isWon = false;
+
+    }
+
+    static initializeGame(puzzle, previousState) {
+
+        if (previousState) {
+            previousState.isPaused = true;
+        }
+
+        const gameState = new SudokuState(puzzle);
+
+        renderGrid(gameState);
+        gameState.startGameTimer();
+        return gameState;
 
     }
 
@@ -58,7 +72,7 @@ export class SudokuState {
         this.#userPuzzle[this.#selectedCell.rowIndex][this.#selectedCell.columnIndex] = value;
         updateConflictMatrix(this.#userPuzzle, this.selectedCell, this.#conflictMatrix);
 
-        if (this.#checkIsWon()) {
+        if (isGameWon(this.#userPuzzle, this.#conflictMatrix)) {
             this.isWon = true;
         }
 
@@ -233,7 +247,7 @@ export class SudokuState {
 
     #startTimer() {
 
-        timerId = setInterval(() => {
+        this.#timerId = setInterval(() => {
             this.elapsedSeconds = this.#elapsedSeconds + 1;
         }, 1000);
 
@@ -241,31 +255,10 @@ export class SudokuState {
 
     #stopTimer() {
 
-        clearInterval(timerId);
-        timerId = null;
+        clearInterval(this.#timerId);
+        this.#timerId = null;
 
     }
-
-    #checkIsWon() {
-
-        return this.#userPuzzle.every((row, rowIndex) =>
-            row.every((value, columnIndex) =>
-                value !== '.' &&
-                !this.hasCellConflicts(rowIndex, columnIndex)
-            )
-        );
-
-    }
-
-}
-
-
-export function initializeGame(puzzle) {
-
-    const gameState = new SudokuState(puzzle);
-    renderGrid(gameState);
-    gameState.startGameTimer();
-    return gameState;
 
 }
 

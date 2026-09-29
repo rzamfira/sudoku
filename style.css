@@ -477,3 +477,22 @@ html {
 .game-layout.is-won .pause-button {
     display: none;
 }
+
+@media (max-width: 850px) {
+    .game-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grid-section {
+        width: min(100%, 300px);
+        flex: none;
+        align-self: center;
+    }
+
+    .controls-section {
+        width: min(100%, 300px);
+        flex: none;
+        align-self: center;
+    }
+}

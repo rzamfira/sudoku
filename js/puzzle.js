@@ -131,3 +131,14 @@ export function modifyCellNotes(notesArray, value) {
 
 }
 
+export function isGameWon(userPuzzle, conflictMatrix) {
+
+    return userPuzzle.every((row, rowIndex) =>
+        row.every((value, columnIndex) =>
+            value !== '.' &&
+            conflictMatrix[rowIndex][columnIndex].length === 0
+        )
+    );
+
+}
+

@@ -10,22 +10,8 @@ export function createGrid() {
     const sudokuSquares = createSudokuSquares(grid);
     createGridCells(sudokuSquares);
 
-    const pauseOverlay = document.createElement('section');
-    pauseOverlay.classList.add('pause-overlay');
-    const icon = document.createElement('img');
-    icon.classList.add('icon-is-paused');
-    icon.src = `./icons/pause.svg`;
-    icon.alt = `pause`;
-    pauseOverlay.appendChild(icon);
-
-    const wonOverlay = document.createElement('section');
-    wonOverlay.classList.add('won-overlay');
-    const message = document.createElement('h2');
-    message.textContent = 'You won!';
-    wonOverlay.appendChild(message);
-
-    grid.appendChild(pauseOverlay);
-    grid.appendChild(wonOverlay);
+    grid.appendChild(createPauseOverlay());
+    grid.appendChild(createWonOverlay());
 
     return grid;
 
@@ -38,9 +24,6 @@ export function renderGrid(currentState) {
     cells.forEach(currentCell => {
         updateCellDisplay(currentCell, currentState);
     });
-
-    const wonOverlay = document.querySelector(`.won-overlay`);
-    wonOverlay.classList.toggle('is-visible', currentState.isWon);
 
 }
 
@@ -142,11 +125,29 @@ function renderNotes(currentCell, currentCellNotes) {
     });
 }
 
+function createPauseOverlay() {
+
+    const pauseOverlay = document.createElement('section');
+    pauseOverlay.classList.add('pause-overlay');
+    const icon = document.createElement('img');
+    icon.classList.add('icon-is-paused');
+    icon.src = `./icons/pause.svg`;
+    icon.alt = `pause`;
+    pauseOverlay.appendChild(icon);
+
+    return pauseOverlay;
+
+}
+
 function createWonOverlay() {
 
     const wonOverlay = document.createElement('section');
     wonOverlay.classList.add('won-overlay');
+    const message = document.createElement('h2');
+    message.textContent = 'You won!';
+    wonOverlay.appendChild(message);
 
+    return wonOverlay;
 
 }
 

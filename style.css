@@ -40,22 +40,69 @@ html {
 }
 
 .game-layout {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "board timer"
+        "board controls";
+
+    gap: 12px;
+    width: min(100%, 835px);
+
+    margin-inline: auto;
+    box-sizing: border-box;
+
 }
 
 .grid-section {
-    width: min(500px, 100%);
+
+    grid-area: board;
+    width: clamp(250px, 100%, 500px);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     aspect-ratio: 1 / 1;
+    min-width: 0;
     border: 2px solid var(--color-grid-primary);
     box-sizing: border-box;
-    align-self: flex-start;
-    container-type: inline-size;
     position: relative;
+    align-self: center;
+
+}
+
+.controls-section {
+
+    grid-area: controls;
+    width: clamp(200px, 100%, 320px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    box-sizing: border-box;
+    gap: 6px;
+
+}
+
+.timer-section {
+
+    grid-area: timer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-grey);
+    font-family: Hauss, sans-serif;
+    font-size: 13px;
+    font-stretch: normal;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: .22px;
+    line-height: 1.23;
+    margin: 0 0 1px;
+    width: 100%;
+    align-self: center;
+    justify-content: flex-end
 }
 
 .grid-square {
@@ -187,33 +234,6 @@ html {
 .grid-item[data-row-index="3"],
 .grid-item[data-row-index="6"] {
     border-top: none;
-}
-
-.controls-section {
-    width: min(300px, 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    margin-left: 15px;
-    box-sizing: border-box;
-    gap: 8px;
-}
-
-.timer-section {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-grey);
-    font-family: Hauss, sans-serif;
-    font-size: 13px;
-    font-stretch: normal;
-    font-style: normal;
-    font-weight: 500;
-    letter-spacing: .22px;
-    line-height: 1.23;
-    margin: 0 0 1px;
 }
 
 .timer-class {
@@ -368,8 +388,7 @@ html {
     grid-template-rows: repeat(3, 1fr);
     gap: 6px;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    container-type: inline-size;
+
 }
 
 .numpad-button {
@@ -478,14 +497,9 @@ html {
     display: none;
 }
 
-@media (max-width: 850px) {
-    .game-layout {
-        flex-direction: column;
-        align-items: center;
-    }
+/* @media (max-width: 900px) {
 
     .grid-section {
-        width: min(100%, 300px);
         flex: none;
         align-self: center;
     }
@@ -494,5 +508,62 @@ html {
         width: min(100%, 300px);
         flex: none;
         align-self: center;
+    }
+} */
+
+@media (max-width: 700px) {
+
+    .game-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+            "timer"
+            "board"
+            "controls";
+
+        gap: 12px;
+        width: 100%;
+    }
+
+    .timer-section {
+
+        width: clamp(250px, 100%, 500px);
+        justify-self: center;
+    }
+
+    .grid-section {
+        width: clamp(250px, 100%, 500px);
+        justify-self: center;
+    }
+
+    .controls-section {
+        width: clamp(250px, 100%, 500px);
+        justify-self: center;
+        gap: 20px;
+    }
+
+    .numpad-section {
+        grid-template-columns: repeat(9, 1fr);
+        grid-template-rows: auto;
+        background-color: transparent;
+        gap: 6px;
+    }
+
+    .numpad-button {
+        font-size: clamp(35px, 6cqi, 45px);
+        height: auto;
+        margin: 0;
+        padding: 10px 0;
+        background-color: transparent;
+    }
+
+    .numpad-button:hover {
+        background-color: transparent;
+    }
+}
+
+@media (max-width: 500px) {
+    .game-action-button{
+        background-color: transparent;
     }
 }

@@ -6,7 +6,6 @@ export function createControlPanel() {
     const control = document.createElement('aside');
     control.classList.add("controls-section");
 
-    control.appendChild(createTimerSection());
     control.appendChild(createGameAction());
     control.appendChild(createNumpadSection());
     control.appendChild(createNewGameSection());

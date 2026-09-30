@@ -1,5 +1,6 @@
 import { createControlPanel } from "./controlsPanel.js";
 import { createGrid } from "./grid.js";
+import { createTimerSection } from "./timer.js";
 
 // function to create the app layout
 export function createLayout() {
@@ -9,9 +10,10 @@ export function createLayout() {
     gameLayout.classList.add('game-layout');
 
     const grid = createGrid();
+    const timer = createTimerSection();
     const controls = createControlPanel();
 
-    gameLayout.append(grid, controls);
+    gameLayout.append(grid, timer, controls);
     appContainer.append(gameLayout);
 
 }

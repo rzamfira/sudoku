@@ -8,6 +8,7 @@ let puzzle = generateSudokuGame();
 let currentState = SudokuState.initializeGame(puzzle);
 
 const grid = document.querySelector('.grid-section');
+const timerSection = document.querySelector('.timer-section')
 const controlsPanel = document.querySelector('.controls-section');
 
 document.addEventListener('keydown', (event) => {
@@ -52,7 +53,7 @@ newGameButton.addEventListener('click', () => {
 
 });
 
-const pauseButton = controlsPanel.querySelector('.pause-button');
+const pauseButton = timerSection.querySelector('.pause-button');
 pauseButton.addEventListener('click', () => {
 
     if (currentState.isWon) {

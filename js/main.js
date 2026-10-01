@@ -10,6 +10,7 @@ let currentState = SudokuState.initializeGame(puzzle);
 const grid = document.querySelector('.grid-section');
 const timerSection = document.querySelector('.timer-section')
 const controlsPanel = document.querySelector('.controls-section');
+const newGameSection = document.querySelector('.new-game-section');
 
 document.addEventListener('keydown', (event) => {
 
@@ -45,7 +46,7 @@ document.addEventListener('keydown', (event) => {
 
 });
 
-const newGameButton = controlsPanel.querySelector('.new-game-button');
+const newGameButton = newGameSection.querySelector('.new-game-button');
 newGameButton.addEventListener('click', () => {
 
     puzzle = generateSudokuGame();

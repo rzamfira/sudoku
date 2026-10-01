@@ -1,4 +1,4 @@
-import { createControlPanel } from "./controlsPanel.js";
+import { createControlPanel, createNewGameSection } from "./controlsPanel.js";
 import { createGrid } from "./grid.js";
 import { createTimerSection } from "./timer.js";
 
@@ -12,8 +12,9 @@ export function createLayout() {
     const grid = createGrid();
     const timer = createTimerSection();
     const controls = createControlPanel();
+    const newGame = createNewGameSection();
 
-    gameLayout.append(grid, timer, controls);
+    gameLayout.append(grid, timer, controls, newGame);
     appContainer.append(gameLayout);
 
 }

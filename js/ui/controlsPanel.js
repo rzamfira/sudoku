@@ -8,7 +8,6 @@ export function createControlPanel() {
 
     control.appendChild(createGameAction());
     control.appendChild(createNumpadSection());
-    control.appendChild(createNewGameSection());
 
     return control;
 
@@ -73,7 +72,7 @@ function createNumpadSection() {
 
 }
 
-function createNewGameSection() {
+export function createNewGameSection() {
 
     const newGameSection = document.createElement(`section`);
     newGameSection.classList.add(`new-game-section`);

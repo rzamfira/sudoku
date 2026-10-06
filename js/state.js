@@ -190,7 +190,7 @@ export class SudokuState {
 
         const modifyValue = value ?? '.';
 
-        this.#addHistoryState(selectedCell);
+        this.#addHistoryState();
 
         if (this.isNotesEnabled) {
             this.#applyNotesUpdate(modifyValue);
@@ -198,18 +198,6 @@ export class SudokuState {
         else {
             this.#applyValueUpdate(modifyValue);
         }
-
-    }
-
-    undoChange() {
-
-        const lastState = this.#history.pop();
-        if (lastState === undefined)
-            return;
-
-        this.selectedCell = lastState.selectedCell;
-        this.selectedCellValue = lastState.puzzleValue;
-        this.selectedCellNotes = lastState.notesMatrix;
 
     }
 
@@ -242,6 +230,18 @@ export class SudokuState {
         }
 
         this.selectedCellNotes = modifyCellNotes(this.selectedCellNotes, value);
+
+    }
+
+    undoChange() {
+
+        const lastState = this.#history.pop();
+        if (lastState === undefined)
+            return;
+
+        this.selectedCell = lastState.selectedCell;
+        this.selectedCellValue = lastState.puzzleValue;
+        this.selectedCellNotes = lastState.notesMatrix;
 
     }
 

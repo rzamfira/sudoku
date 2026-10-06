@@ -1,7 +1,4 @@
-import { createTimerSection } from "./timer.js";
-
-// function to create the Control Panel
-export function createControlPanel() {
+export function createControlSection() {
 
     const control = document.createElement('aside');
     control.classList.add("controls-section");
@@ -21,7 +18,6 @@ export function updateNotesButtonUI(isEnabled) {
 }
 
 
-// function to create the Game Action Buttons (Undo, Erase, Notes)
 function createGameAction() {
 
     const gameActionSection = document.createElement('section');

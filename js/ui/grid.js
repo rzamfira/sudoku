@@ -1,7 +1,6 @@
 import { calculateSquareIndex } from "../puzzle.js";
 import { highlightConflicts, highlightSelectedCell, removeHighlight } from "./highlight.js";
 
-// function to create the sudoku grid
 export function createGrid() {
 
     const grid = document.createElement('section');
@@ -91,8 +90,8 @@ function updateCellDisplay(currentCell, currentState) {
     const selectedCell = currentState.selectedCell;
     const selectedValue = currentState.selectedCellValue;
 
-    const currentValue = currentState.getCellValue(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);  // shoud I use get here to get all the values of the UserPuzzle
-    const currentCellNotes = currentState.getCellNotes(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex); // and same here?
+    const currentValue = currentState.getCellValue(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex); 
+    const currentCellNotes = currentState.getCellNotes(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex); 
 
     const isCellEditable = currentState.isCellEditable(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);
     const hasCellConflicts = currentState.hasCellConflicts(currentCell.dataset.rowIndex, currentCell.dataset.columnIndex);

@@ -12,7 +12,7 @@ export function highlightSelectedCell(cell, selectedCell, selectedValue) {
     }
 
     if (cell.textContent != '' && cell.textContent === selectedValue) {
-        cell.classList.add('highlight-value'); // highlight the elements with same value too
+        cell.classList.add('highlight-value');
     }
 
 }
